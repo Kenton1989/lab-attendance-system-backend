@@ -1,9 +1,5 @@
-from knox.auth import TokenAuthentication as KnoxTokenAuthentication
 from knox.views import LoginView, LogoutView, LogoutAllView
-
-from rest_framework.decorators import action
-from rest_framework.exceptions import MethodNotAllowed
-from rest_framework import authentication, permissions, views, viewsets
+from rest_framework import views
 
 
 class CreateToken(LoginView):

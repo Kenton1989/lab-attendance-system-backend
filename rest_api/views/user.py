@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from ..serializers import UserSerializer, GroupSerializer
+from rest_api.serializers import UserSerializer, GroupSerializer
 
 
 class UserList(generics.ListCreateAPIView):

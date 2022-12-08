@@ -1,6 +1,10 @@
 from django.urls import path, include
-from .views.user import UserList, UserDetails, GroupList
-from .views import token
+from rest_api.views.user import UserList, UserDetails, GroupList
+from rest_api.views import token, WeekViewSet
+from rest_framework.routers import SimpleRouter
+
+rest_router = SimpleRouter()
+rest_router.register(r'weeks', WeekViewSet)
 
 urlpatterns = [
     # authentication API
@@ -11,4 +15,6 @@ urlpatterns = [
     path('users/', UserList.as_view()),
     path('users/<pk>/', UserDetails.as_view()),
     path('groups/', GroupList.as_view()),
+
+    path('', include(rest_router.urls)),
 ]
