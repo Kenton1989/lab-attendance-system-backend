@@ -4,11 +4,27 @@ from .user import User
 from django.utils import timezone
 
 
+class CheckInState:
+    ABSENT = 'absent'
+    ATTEND = 'attend'
+
+
+CHECK_IN_STATE_CHOICES = [
+    (CheckInState.ABSENT, 'absent'),
+    (CheckInState.ATTEND, 'attend'),
+]
+
+
 class AbstractAttendance(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    check_in_state = models.CharField(max_length=20, blank=True)
+    check_in_state = models.CharField(
+        choices=CHECK_IN_STATE_CHOICES,
+        max_length=20,
+        default=CheckInState.ABSENT
+    )
+
     check_in_datetime = models.DateTimeField(blank=True)
 
     last_modify = models.DateTimeField(default=timezone.now)
@@ -20,6 +36,7 @@ class AbstractAttendance(models.Model):
     class Meta:
         abstract = True
 
+
 class StudentAttendance(AbstractAttendance):
     class Meta:
         constraints = [
@@ -29,6 +46,7 @@ class StudentAttendance(AbstractAttendance):
                 violation_error_message='Only one attendance record allowed per session per student.'
             )
         ]
+
 
 class TeacherAttendance(AbstractAttendance):
     class Meta:

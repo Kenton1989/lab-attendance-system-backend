@@ -1,5 +1,5 @@
 from django.urls import path, include
-from rest_api.views.user import UserList, UserDetails, GroupList
+from rest_api.views.user import UserList, UserDetails
 from rest_api.views import token, WeekViewSet
 from rest_framework.routers import SimpleRouter
 
@@ -14,7 +14,6 @@ urlpatterns = [
 
     path('users/', UserList.as_view()),
     path('users/<pk>/', UserDetails.as_view()),
-    path('groups/', GroupList.as_view()),
 
     path('', include(rest_router.urls)),
 ]

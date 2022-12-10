@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models import Q
+from django.core.validators import MinValueValidator
+
 from .user import User
 from .group import Group
 from .lab import Lab
@@ -16,7 +19,10 @@ class Session(models.Model):
         on_delete=models.CASCADE,
         related_name='sessions'
     )
-    room_no = models.IntegerField(blank=True)
+    room_no = models.IntegerField(
+        blank=True,
+        validators=(MinValueValidator(1),)
+    )
 
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
@@ -33,6 +39,15 @@ class Session(models.Model):
     )
 
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=Q(end_datetime_gte=Q('start_datetime')),
+                name='session_end_datetime_after_start_datetime',
+                violation_error_message='end_datetime must be greater than start_datetime',
+            )
+        ]
 
 
 class MakeUpRelationship(models.Model):
