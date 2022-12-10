@@ -9,7 +9,7 @@ class Group(models.Model):
         related_name='groups'
     )
     name = models.CharField('group name', max_length=20)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
     supervisors = models.ManyToManyField(
         User,

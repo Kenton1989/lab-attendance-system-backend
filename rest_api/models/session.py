@@ -32,7 +32,7 @@ class Session(models.Model):
         through_fields=('original_session', 'student')
     )
 
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
 
 class MakeUpRelationship(models.Model):

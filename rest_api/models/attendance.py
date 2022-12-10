@@ -15,7 +15,7 @@ class AbstractAttendance(models.Model):
 
     remark = models.CharField(max_length=200, blank=True)
 
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         abstract = True
