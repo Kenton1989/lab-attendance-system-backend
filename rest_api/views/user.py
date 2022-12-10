@@ -15,8 +15,3 @@ class UserDetails(generics.RetrieveAPIView):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
 
-
-class GroupList(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer

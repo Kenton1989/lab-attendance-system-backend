@@ -1,2 +1,6 @@
-from .user import UserSerializer, GroupSerializer
+from .user import UserSerializer
 from .week import WeekSerializer
+from .course import CourseSerializer
+from .group import GroupSerializer
+from .session import SessionSerializer
+from .attendance import StudentAttendanceSerializer, TeacherAttendanceSerializer
