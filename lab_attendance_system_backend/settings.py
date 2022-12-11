@@ -139,4 +139,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    
+    # throttling configurations
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_api.throttling.BurstRateThrottle',
+        'rest_api.throttling.SustainedRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'burst': '60/min',
+        'sustained': '1000/day'
+    }
 }
