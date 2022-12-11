@@ -53,19 +53,20 @@ class Session(models.Model):
 class MakeUpRelationship(models.Model):
     student = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='+'
     )
 
     original_session = models.ForeignKey(
         Session,
         on_delete=models.CASCADE,
-        related_name='original_session_of_make_up_relationship'
+        related_name='+'
     )
 
     make_up_session = models.ForeignKey(
         Session,
         on_delete=models.CASCADE,
-        related_name='make_up_session_of_make_up_relationship'
+        related_name='+'
     )
 
     class Meta:

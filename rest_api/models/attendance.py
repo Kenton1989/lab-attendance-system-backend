@@ -16,9 +16,6 @@ CHECK_IN_STATE_CHOICES = [
 
 
 class AbstractAttendance(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     check_in_state = models.CharField(
         choices=CHECK_IN_STATE_CHOICES,
         max_length=20,
@@ -38,6 +35,18 @@ class AbstractAttendance(models.Model):
 
 
 class StudentAttendance(AbstractAttendance):
+    session = models.ForeignKey(
+        Session,
+        on_delete=models.CASCADE,
+        related_name='student_attendances'
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='student_attendances'
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -49,6 +58,18 @@ class StudentAttendance(AbstractAttendance):
 
 
 class TeacherAttendance(AbstractAttendance):
+    session = models.ForeignKey(
+        Session,
+        on_delete=models.CASCADE,
+        related_name='teacher_attendances'
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='teacher_attendances'
+    )
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

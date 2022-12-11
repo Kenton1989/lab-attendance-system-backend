@@ -34,17 +34,25 @@ class Group(models.Model):
                 violation_error_message='Group name should be unique under a course.'
             )
         ]
-    
+
     def __str__(self):
         return f'{self.course.code} {self.name} [{self.id}]'
 
 
 class GroupStudent(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='+'
+    )
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.CASCADE,
+        related_name='+'
+    )
 
     seat = models.CharField(max_length=20, blank=True)
-    
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

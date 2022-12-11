@@ -6,7 +6,7 @@ ONE_WEEK = timedelta(days=7)
 class WeekSerializer(serializers.ModelSerializer):
     class Meta:
         model = Week
-        fields = ['url', 'name', 'monday', 'next_monday']
+        fields = ['name', 'monday', 'next_monday']
 
     def validate(self, data):
         if data['next_monday'] - data['monday'] != ONE_WEEK:
