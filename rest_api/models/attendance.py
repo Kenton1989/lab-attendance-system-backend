@@ -22,11 +22,11 @@ class AbstractAttendance(models.Model):
         default=CheckInState.ABSENT
     )
 
-    check_in_datetime = models.DateTimeField(blank=True)
+    check_in_datetime = models.DateTimeField(null=True)
 
     last_modify = models.DateTimeField(default=timezone.now)
 
-    remark = models.CharField(max_length=200, blank=True)
+    remark = models.CharField(max_length=200, null=True)
 
     is_active = models.BooleanField(default=True)
 

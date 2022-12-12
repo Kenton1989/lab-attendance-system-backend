@@ -11,7 +11,7 @@ class Lab(models.Model):
         primary_key=True
     )
     room_count = models.IntegerField(
-        blank=True,
+        null=True,
         validators=(MinValueValidator(1),)
     )
     is_active = models.BooleanField(default=True)

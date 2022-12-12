@@ -51,7 +51,7 @@ class GroupStudent(models.Model):
         related_name='+'
     )
 
-    seat = models.CharField(max_length=20, blank=True)
+    seat = models.CharField(max_length=20, null=True)
 
     class Meta:
         constraints = [

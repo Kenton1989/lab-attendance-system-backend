@@ -28,11 +28,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     # profile data
-    display_name = models.CharField('display name', max_length=150, blank=True)
+    display_name = models.CharField('display name', max_length=150, null=True)
 
     # profile data required by Django's default admin page,
     # including is_staff, is_active, is_superuser, last_login and date_joined
-    email = models.EmailField('email address', blank=True)
+    email = models.EmailField('email address', null=True)
     is_staff = models.BooleanField(
         'staff status',
         default=False,

@@ -7,10 +7,17 @@ class WeekSerializer(serializers.ModelSerializer):
     class Meta:
         model = Week
         fields = ['name', 'monday', 'next_monday']
+        read_only_fields = ['next_monday']
 
-    def validate(self, data):
-        if data['next_monday'] - data['monday'] != ONE_WEEK:
-            raise serializers.ValidationError('next_monday must be exactly 7 days after monday')
+    
+    def create(self, validated_data):
+        self.add_next_monday(validated_data)
+        return super().create(validated_data)
 
-        return super().validate(data)
+    def update(self, validated_data):
+        self.add_next_monday(validated_data)
+        return super().update(validated_data)
 
+    def add_next_monday(self, validated_data):
+        monday = validated_data['monday']
+        validated_data['next_monday'] = monday + ONE_WEEK

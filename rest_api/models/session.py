@@ -20,7 +20,7 @@ class Session(models.Model):
         related_name='sessions'
     )
     room_no = models.IntegerField(
-        blank=True,
+        null=True,
         validators=(MinValueValidator(1),)
     )
 
@@ -29,7 +29,7 @@ class Session(models.Model):
 
     is_compulsory = models.BooleanField(default=True)
     allow_late_check_in = models.BooleanField(default=True)
-    check_in_deadline = models.DateTimeField()
+    check_in_deadline_mins = models.IntegerField(validators=[MinValueValidator(0)])
 
     make_up_students = models.ManyToManyField(
         User,
@@ -46,7 +46,10 @@ class Session(models.Model):
                 check=Q(end_datetime_gte=Q('start_datetime')),
                 name='session_end_datetime_after_start_datetime',
                 violation_error_message='end_datetime must be greater than start_datetime',
-            )
+            ),
+            models.CheckConstraint(check=Q(lab_room__gte=1),
+                                   name='group_valid_room_number',
+                                   violation_error_message='room_no must be positive'),
         ]
 
 
