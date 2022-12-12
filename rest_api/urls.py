@@ -15,5 +15,7 @@ urlpatterns = [
     path('users/', UserList.as_view()),
     path('users/<pk>/', UserDetails.as_view()),
 
+    path('settings/', include('dbsettings.urls')),
+
     path('', include(rest_router.urls)),
 ]

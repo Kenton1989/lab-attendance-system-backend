@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from rest_api.models import User
+from django.contrib.auth.password_validation import validate_password
 
 # first we define the serializers
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, validators=[validate_password])
 
     class Meta:
         model = User

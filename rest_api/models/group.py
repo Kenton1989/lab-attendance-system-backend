@@ -8,7 +8,7 @@ class Group(models.Model):
         on_delete=models.CASCADE,
         related_name='groups'
     )
-    name = models.CharField('group name', max_length=20)
+    name = models.CharField(max_length=20)
     is_active = models.BooleanField(default=True)
 
     supervisors = models.ManyToManyField(
@@ -33,6 +33,10 @@ class Group(models.Model):
                 name='unique_course_group',
                 violation_error_message='Group name should be unique under a course.'
             )
+        ]
+
+        indexes = [
+            models.Index(fields=['course']),
         ]
 
     def __str__(self):

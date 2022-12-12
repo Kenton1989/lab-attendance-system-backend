@@ -56,6 +56,11 @@ class StudentAttendance(AbstractAttendance):
             )
         ]
 
+        indexes = [
+            models.Index(fields=['session']),
+            models.Index(fields=['user', 'session']),
+        ]
+
 
 class TeacherAttendance(AbstractAttendance):
     session = models.ForeignKey(
@@ -77,4 +82,9 @@ class TeacherAttendance(AbstractAttendance):
                 name='unique_teacher_attendance_session',
                 violation_error_message='Only one attendance record allowed per session per teacher.'
             )
+        ]
+
+        indexes = [
+            models.Index(fields=['session']),
+            models.Index(fields=['user', 'session']),
         ]

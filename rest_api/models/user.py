@@ -2,8 +2,17 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.contrib.auth.models import UserManager
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+import re
 
-from rest_api.validators import username_validator
+_username_pattern = re.compile(r'^\w+$')
+
+
+def username_validator(value: str) -> None:
+    if not _username_pattern.match(value):
+        raise ValidationError(
+            'The username can only cantains alphabets and digits.')
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -32,7 +41,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # profile data required by Django's default admin page,
     # including is_staff, is_active, is_superuser, last_login and date_joined
-    email = models.EmailField('email address', null=True)
+    email = models.EmailField(
+        'email address',
+        validators=[validate_email],
+        null=True
+    )
+    date_joined = models.DateTimeField('date joined', default=timezone.now)
     is_staff = models.BooleanField(
         'staff status',
         default=False,
@@ -44,7 +58,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text='Designates whether this user should be treated as active. '
         'Unselect this instead of deleting accounts.',
     )
-    date_joined = models.DateTimeField('date joined', default=timezone.now)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['username']),
+        ]
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'

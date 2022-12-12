@@ -1,7 +1,15 @@
 from django.db import models
 from django.db.models import F, Q
-from datetime import timedelta
-from rest_api.validators import monday_validator
+from datetime import timedelta, date
+from django.core.exceptions import ValidationError
+
+_monday_code = 0
+
+
+def monday_validator(value: date) -> None:
+    if value.weekday() != _monday_code:
+        raise ValidationError(
+            'The date is not monday.')
 
 
 class Week(models.Model):
@@ -16,4 +24,8 @@ class Week(models.Model):
                 name='ensure_7_days_gap',
                 violation_error_message='next_monday must be exactly 7 days greater then monday',
             )
+        ]
+
+        indexes = [
+            models.Index(fields=['monday', 'next_monday']),
         ]
