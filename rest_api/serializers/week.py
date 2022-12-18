@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_api.models import Week
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 
 ONE_WEEK = timedelta(days=7)
 
 
-def validate_non_overlapping_monday(monday: datetime):
+def validate_non_overlapping_monday(monday: date):
     next_monday = monday + ONE_WEEK
 
     # if the new week interval overlap with an existing week
@@ -20,7 +20,7 @@ class WeekSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Week
-        fields = ['name', 'monday', 'next_monday']
+        fields = ['id', 'name', 'monday', 'next_monday']
         read_only_fields = ['next_monday']
 
     def create(self, validated_data):
@@ -32,5 +32,5 @@ class WeekSerializer(serializers.ModelSerializer):
         return super().update(validated_data)
 
     def add_next_monday(self, validated_data):
-        monday = validated_data['monday']
+        monday: date = validated_data['monday']
         validated_data['next_monday'] = monday + ONE_WEEK

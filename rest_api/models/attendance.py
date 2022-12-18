@@ -6,11 +6,13 @@ from django.utils import timezone
 
 class CheckInState:
     ABSENT = 'absent'
+    LATE = 'late'
     ATTEND = 'attend'
 
 
 CHECK_IN_STATE_CHOICES = [
     (CheckInState.ABSENT, 'absent'),
+    (CheckInState.LATE, 'late'),
     (CheckInState.ATTEND, 'attend'),
 ]
 

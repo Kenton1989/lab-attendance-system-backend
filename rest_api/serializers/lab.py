@@ -9,10 +9,10 @@ class LabSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    short_name = serializers.CharField(source="user.username")
-    full_name = serializers.CharField(source="user.display_name")
+    username = serializers.CharField(source="user.username")
+    display_name = serializers.CharField(source="user.display_name")
 
     class Meta:
         model = Lab
-        fields = ['id', 'short_name', 'full_name',
+        fields = ['id', 'username', 'display_name',
                   'room_count', 'is_active']

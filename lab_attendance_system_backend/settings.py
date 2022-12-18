@@ -143,7 +143,7 @@ REST_FRAMEWORK = {
 
     # pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    
+
     # throttling configurations
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_api.throttling.BurstRateThrottle',

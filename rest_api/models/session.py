@@ -6,8 +6,10 @@ from .user import User
 from .group import Group
 from .lab import Lab
 
+
 def get_default_ddl():
     return 30
+
 
 class Session(models.Model):
     group = models.ForeignKey(
@@ -34,13 +36,6 @@ class Session(models.Model):
     check_in_deadline_mins = models.IntegerField(
         validators=[MinValueValidator(0)], default=get_default_ddl)
 
-    make_up_students = models.ManyToManyField(
-        User,
-        related_name='make_up_sessions',
-        through='StudentMakeUpSession',
-        through_fields=('original_session', 'user')
-    )
-
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -66,20 +61,22 @@ class StudentMakeUpSession(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='+'
+        related_name='user_of_student_make_up'
     )
 
     original_session = models.ForeignKey(
         Session,
         on_delete=models.CASCADE,
-        related_name='+'
+        related_name='original_of_student_make_up'
     )
 
     make_up_session = models.ForeignKey(
         Session,
         on_delete=models.CASCADE,
-        related_name='+'
+        related_name='make_up_of_student_make_up'
     )
+
+    seat = models.CharField(max_length=20, null=True)
 
     class Meta:
         constraints = [
