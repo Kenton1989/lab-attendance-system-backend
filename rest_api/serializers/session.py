@@ -21,7 +21,7 @@ class SessionSerializer(DynamicFieldsMixin, ModelSerializer):
                   'start_datetime', 'end_datetime',
                   'is_compulsory', 'allow_late_check_in', 'check_in_deadline',
                   'is_active']
-        default_exclude_fields = ['lab', 'group']
+        default_exclude_fields = ['lab_id', 'group_id']
 
 
 class StudentMakeUpSessionSerializer(DynamicFieldsMixin, ModelSerializer):
@@ -41,6 +41,6 @@ class StudentMakeUpSessionSerializer(DynamicFieldsMixin, ModelSerializer):
         fields = ['id', 'user',  'user_id',
                   'original_session', 'original_session_id',
                   'make_up_session', 'make_up_session_id']
-        default_exclude_fields = ['user',
-                                  'original_session',
-                                  'make_up_session']
+        default_exclude_fields = ['user_id',
+                                  'original_session_id',
+                                  'make_up_session_id']

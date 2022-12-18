@@ -13,7 +13,7 @@ class GroupSerializer(DynamicFieldsMixin, ModelSerializer):
     class Meta:
         model = Group
         fields = ['id', 'course', 'course_id', 'name', 'is_active']
-        default_exclude_fields = ['course']
+        default_exclude_fields = ['course_id']
 
 
 class GroupStudentSerializer(DynamicFieldsMixin, ModelSerializer):
@@ -26,4 +26,4 @@ class GroupStudentSerializer(DynamicFieldsMixin, ModelSerializer):
     class Meta:
         model = GroupStudent
         fields = ['id', 'student', 'student_id', 'group', 'group_id', 'seat']
-        default_exclude_fields = ['student', 'group']
+        default_exclude_fields = ['student_id', 'group_id']

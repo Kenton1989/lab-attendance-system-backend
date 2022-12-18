@@ -9,7 +9,7 @@ class BaseAttendanceSerializer(DynamicFieldsMixin, ModelSerializer):
     user = UserSerializer(read_only=True)
     user_id = PrimaryKeyRelatedField(source='user')
 
-    session = UserSerializer(read_only=True)
+    session = SessionSerializer(read_only=True)
     session_id = PrimaryKeyRelatedField(source='session')
 
     class Meta:
@@ -18,7 +18,7 @@ class BaseAttendanceSerializer(DynamicFieldsMixin, ModelSerializer):
                   'user', 'user_id',
                   'check_in_state', 'check_in_datetime',
                   'last_modify', 'remark', 'is_active']
-        default_exclude_fields = ['session', 'user']
+        default_exclude_fields = ['session_id', 'user_id']
 
 
 class StudentAttendanceSerializer(BaseAttendanceSerializer):
