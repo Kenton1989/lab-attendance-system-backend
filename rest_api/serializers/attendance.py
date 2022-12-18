@@ -1,18 +1,31 @@
-
-from rest_framework import serializers
 from rest_api.models import StudentAttendance, TeacherAttendance
+from rest_framework.serializers import PrimaryKeyRelatedField, ModelSerializer
+from .dynamic_field_mixin import DynamicFieldsMixin
+from .user import UserSerializer
+from .session import SessionSerializer
 
-COMMON_FIELDS = ['id', 'session', 'user',
-                 'check_in_state', 'check_in_datetime',
-                 'last_modify', 'remark', 'is_active']
 
+class BaseAttendanceSerializer(DynamicFieldsMixin, ModelSerializer):
+    user = UserSerializer(read_only=True)
+    user_id = PrimaryKeyRelatedField(source='user')
 
-class StudentAttendanceSerializer(serializers.ModelSerializer):
+    session = UserSerializer(read_only=True)
+    session_id = PrimaryKeyRelatedField(source='session')
+
     class Meta:
+        fields = ['id',
+                  'session', 'session_id',
+                  'user', 'user_id',
+                  'check_in_state', 'check_in_datetime',
+                  'last_modify', 'remark', 'is_active']
+        default_exclude_fields = ['session', 'user']
+
+
+class StudentAttendanceSerializer(BaseAttendanceSerializer):
+    class Meta(BaseAttendanceSerializer.Meta):
         model = StudentAttendance
-        fields = COMMON_FIELDS
 
-class TeacherAttendanceSerializer(serializers.ModelSerializer):
-    class Meta:
+
+class TeacherAttendanceSerializer(BaseAttendanceSerializer):
+    class Meta(BaseAttendanceSerializer.Meta):
         model = TeacherAttendance
-        fields = COMMON_FIELDS

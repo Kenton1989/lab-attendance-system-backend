@@ -1,16 +1,29 @@
 from rest_api.models import Group, GroupStudent
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 from .user import UserSerializer
+from .course import CourseSerializer
+from .group import GroupSerializer
+from .dynamic_field_mixin import DynamicFieldsMixin
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupSerializer(DynamicFieldsMixin, ModelSerializer):
+    course = CourseSerializer(read_only=True)
+    course_id = PrimaryKeyRelatedField(source='course')
+
     class Meta:
         model = Group
-        fields = ['id', 'course', 'name', 'is_active']
+        fields = ['id', 'course', 'course_id', 'name', 'is_active']
+        default_exclude_fields = ['course']
 
 
-class GroupStudentSerializer(serializers.ModelSerializer):
-    student = UserSerializer(many=False, read_only=True)
+class GroupStudentSerializer(DynamicFieldsMixin, ModelSerializer):
+    student = UserSerializer(read_only=True)
+    student_id = PrimaryKeyRelatedField(source='student')
+
+    group = GroupSerializer(read_only=True)
+    group_id = PrimaryKeyRelatedField(source='group')
+
     class Meta:
-        model = Group
-        fields = ['student', 'group', 'seat']
+        model = GroupStudent
+        fields = ['id', 'student', 'student_id', 'group', 'group_id', 'seat']
+        default_exclude_fields = ['student', 'group']

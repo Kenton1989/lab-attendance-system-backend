@@ -2,6 +2,7 @@ from django.db import models
 from .course import Course
 from .user import User
 
+
 class Group(models.Model):
     course = models.ForeignKey(
         Course,

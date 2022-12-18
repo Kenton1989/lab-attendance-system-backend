@@ -1,8 +1,9 @@
 from rest_api.models import Lab
 from rest_framework import serializers
+from .dynamic_field_mixin import DynamicFieldsMixin
 
 
-class LabSerializer(serializers.ModelSerializer):
+class LabSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         source='user',
         many=False,
