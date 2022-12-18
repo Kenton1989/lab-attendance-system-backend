@@ -7,10 +7,10 @@ from .session import SessionSerializer
 
 class BaseAttendanceSerializer(DynamicFieldsMixin, ModelSerializer):
     user = UserSerializer(read_only=True)
-    user_id = PrimaryKeyRelatedField(source='user')
+    user_id = PrimaryKeyRelatedField(source='user', read_only=True)
 
     session = SessionSerializer(read_only=True)
-    session_id = PrimaryKeyRelatedField(source='session')
+    session_id = PrimaryKeyRelatedField(source='session', read_only=True)
 
     class Meta:
         fields = ['id',

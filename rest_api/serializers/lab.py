@@ -10,8 +10,9 @@ class LabSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
         read_only=True
     )
 
-    username = serializers.CharField(source="user.username")
-    display_name = serializers.CharField(source="user.display_name")
+    username = serializers.CharField(source="user.username", read_only=True)
+    display_name = serializers.CharField(
+        source="user.display_name", read_only=True)
 
     class Meta:
         model = Lab

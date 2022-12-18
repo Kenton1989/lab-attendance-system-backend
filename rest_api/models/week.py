@@ -9,7 +9,7 @@ _monday_code = 0
 def monday_validator(value: date) -> None:
     if value.weekday() != _monday_code:
         raise ValidationError(
-            'The date is not monday.')
+            'the date is not monday')
 
 
 class Week(models.Model):

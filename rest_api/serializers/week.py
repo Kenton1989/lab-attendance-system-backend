@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_api.models import Week
+from rest_api.models.week import monday_validator
 from datetime import date, timedelta
-from dynamic_field_mixin import DynamicFieldsMixin
+from .dynamic_field_mixin import DynamicFieldsMixin
 
 
 ONE_WEEK = timedelta(days=7)
@@ -17,8 +18,9 @@ def validate_non_overlapping_monday(monday: date):
 
 
 class WeekSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
-    monday = serializers.CharField(
-        validators=[validate_non_overlapping_monday])
+    monday = serializers.DateField(
+        validators=[monday_validator, validate_non_overlapping_monday]
+    )
 
     class Meta:
         model = Week

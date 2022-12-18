@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_api.models import User
 from django.contrib.auth.password_validation import validate_password
-from dynamic_field_mixin import DynamicFieldsMixin
+from .dynamic_field_mixin import DynamicFieldsMixin
 
 
 class UserSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
