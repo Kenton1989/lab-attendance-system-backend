@@ -54,12 +54,12 @@ class StudentMakeUpSession(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'original_session'],
                 name='unique_original_session_student',
-                violation_error_message='Student can make up a session using only one another session.'
+                violation_error_message='Student can make up a session using only one another session'
             ),
             models.UniqueConstraint(
                 fields=['user', 'make_up_session'],
                 name='unique_make_up_session_student',
-                violation_error_message='Student can only participate one session for at most once.'
+                violation_error_message='Student can only participate one session for at most once'
             )
         ]
 

@@ -54,7 +54,7 @@ class StudentAttendance(AbstractAttendance):
             models.UniqueConstraint(
                 fields=['session', 'user'],
                 name='unique_student_attendance_session',
-                violation_error_message='Only one attendance record allowed per session per student.'
+                violation_error_message='only one attendance record allowed per session per student'
             )
         ]
 
@@ -82,7 +82,7 @@ class TeacherAttendance(AbstractAttendance):
             models.UniqueConstraint(
                 fields=['session', 'user'],
                 name='unique_teacher_attendance_session',
-                violation_error_message='Only one attendance record allowed per session per teacher.'
+                violation_error_message='only one attendance record allowed per session per teacher'
             )
         ]
 

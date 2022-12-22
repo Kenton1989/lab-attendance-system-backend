@@ -12,7 +12,7 @@ _username_pattern = re.compile(r'^\w+$')
 def validate_username(value: str) -> None:
     if not _username_pattern.match(value):
         raise ValidationError(
-            'The username can only cantains alphabets and digits.')
+            'the username can only contain alphabets and digits')
 
 
 class UserSerializer(BaseModelSerializer):
