@@ -6,7 +6,8 @@ from typing import Literal, List
 class DynamicFieldsMixin(serializers.ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed during reading.
+    controls which fields should be displayed during reading. All writable fields
+    will be kept during writing.
 
     Usage:
     >>> class MySerializer(BaseModelSerializer):
@@ -23,10 +24,6 @@ class DynamicFieldsMixin(serializers.ModelSerializer):
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
 
-        # if writing is happening, don't remove any fields
-        if hasattr(self, 'initial_data'):
-            return
-
         if fields is None:
             request = self.context.get('request', None)
             if request:
@@ -34,8 +31,8 @@ class DynamicFieldsMixin(serializers.ModelSerializer):
         elif fields == '__all__':
             fields = self.fields.keys()
 
-        include_fields: list = self.fields.keys()
-        exclude_fields: list = []
+        include_fields = None
+        exclude_fields = None
 
         if fields is not None:
             include_fields = fields
@@ -43,15 +40,26 @@ class DynamicFieldsMixin(serializers.ModelSerializer):
             meta = self.Meta
             if hasattr(meta, 'default_include_fields'):
                 include_fields = meta.default_include_fields
-            elif hasattr(meta, 'default_exclude_fields'):
+            if hasattr(meta, 'default_exclude_fields'):
                 exclude_fields = meta.default_exclude_fields
+
+        if include_fields is None and exclude_fields is None:
+            return
+        if include_fields is None:
+            include_fields = self.fields.keys()
+        if exclude_fields is None:
+            exclude_fields = []
 
         unwanted_fields = (set(self.fields.keys())
                            .difference(include_fields)
                            .union(exclude_fields))
 
         for field_name in unwanted_fields:
-            self.fields.pop(field_name, None)
+            field = self.fields.get(field_name)
+            if field.read_only:
+                self.fields.pop(field_name)
+            elif not field.write_only:
+                field.write_only = True
 
     def _parse_request_fields(self, request: Request):
         fields_query = request.query_params.get('fields')

@@ -75,6 +75,11 @@ class GroupStudent(models.Model):
             models.UniqueConstraint(
                 fields=['group', 'student'],
                 name='unique_group_student',
-                violation_error_message='Student should be unique under a group.'
-            )
+                violation_error_message='student should be unique under a group.'
+            ),
+            models.UniqueConstraint(
+                fields=['group', 'seat'],
+                name='unique_group_seat',
+                violation_error_message='seat should be unique under a group'
+            ),
         ]

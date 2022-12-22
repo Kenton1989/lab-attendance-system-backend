@@ -1,11 +1,26 @@
-from rest_framework.serializers import PrimaryKeyRelatedField
+from rest_framework.serializers import PrimaryKeyRelatedField, IntegerField
 from rest_framework.validators import UniqueTogetherValidator
+from rest_framework.exceptions import ValidationError
+from django.core.validators import MinValueValidator
+from django.db.models import Q
 
-from rest_api.models import Group, GroupStudent, Course, User
+from rest_api.models import Group, GroupStudent, Course, User, Lab
 from .user import UserSerializer
 from .course import CourseSerializer
 from .base import BaseModelSerializer
 from .lab import LabSerializer
+
+
+class MaxLabRoomNoValidator:
+    requires_context = True
+
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+        if 'lab' in attrs or 'room_no' in attrs:
+            get = serializer.make_latest_field_getter(attrs)
+            lab: Lab = get('lab')
+            room_no: int = get('room_no')
+            if room_no > lab.room_count:
+                raise ValidationError('room_no exceeds lab room count')
 
 
 class GroupSerializer(BaseModelSerializer):
@@ -15,7 +30,9 @@ class GroupSerializer(BaseModelSerializer):
 
     lab = LabSerializer(read_only=True)
     lab_id = PrimaryKeyRelatedField(
-        source='lab', write_only=True, queryset=Course.objects.all())
+        source='lab', write_only=True, queryset=Lab.objects.all())
+
+    room_no = IntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         model = Group
@@ -27,8 +44,27 @@ class GroupSerializer(BaseModelSerializer):
             UniqueTogetherValidator(
                 queryset=Group.objects.all(),
                 fields=('course', 'name')
-            )
+            ),
+            MaxLabRoomNoValidator(),
         ]
+
+
+class UniqueCourseStudentValidator:
+    requires_context = True
+
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+        if 'group' in attrs or 'student' in attrs:
+            get = serializer.make_latest_field_getter(attrs)
+            group = get('group')
+            student = get('student')
+            course = group.course
+            if GroupStudent.objects.filter(
+                ~Q(group=group),
+                group__course=course,
+                student=student
+            ).exists():
+                raise ValidationError(
+                    'the student is already in another group of the same course')
 
 
 class GroupStudentSerializer(BaseModelSerializer):
@@ -46,6 +82,11 @@ class GroupStudentSerializer(BaseModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=GroupStudent.objects.all(),
-                fields=('student', 'group')
-            )
+                fields=('group', 'student')
+            ),
+            UniqueTogetherValidator(
+                queryset=GroupStudent.objects.all(),
+                fields=('group', 'seat')
+            ),
+            UniqueCourseStudentValidator(),
         ]

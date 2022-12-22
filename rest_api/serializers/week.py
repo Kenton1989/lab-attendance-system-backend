@@ -35,13 +35,13 @@ class WeekSerializer(BaseModelSerializer):
         read_only_fields = ['next_monday']
 
     def create(self, validated_data):
-        self.add_next_monday(validated_data)
+        self._add_next_monday(validated_data)
         return super().create(validated_data)
 
     def update(self, validated_data):
-        self.add_next_monday(validated_data)
+        self._add_next_monday(validated_data)
         return super().update(validated_data)
 
-    def add_next_monday(self, validated_data):
+    def _add_next_monday(self, validated_data):
         monday: date = validated_data['monday']
         validated_data['next_monday'] = monday + _ONE_WEEK

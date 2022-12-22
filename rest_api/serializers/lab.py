@@ -1,7 +1,22 @@
-from rest_api.models import Lab
-from rest_framework import serializers
-from .base import BaseModelSerializer
 from django.core.validators import MinValueValidator
+
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+
+from rest_api.models import Lab
+from .base import BaseModelSerializer
+
+
+class IncreasingLabRoomCountValidator:
+    requires_context = True
+
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+
+        if serializer.instance and 'room_count' in attrs:
+            room_count = attrs.get('room_count')
+            if serializer.instance.room_count > room_count:
+                raise ValidationError(
+                    'room_count cannot be smaller than existing value')
 
 
 class LabSerializer(BaseModelSerializer):
@@ -23,3 +38,6 @@ class LabSerializer(BaseModelSerializer):
         model = Lab
         fields = ['id', 'username', 'display_name',
                   'room_count', 'is_active']
+        validators = [
+            IncreasingLabRoomCountValidator()
+        ]

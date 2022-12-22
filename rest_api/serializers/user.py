@@ -9,14 +9,14 @@ import re
 _username_pattern = re.compile(r'^\w+$')
 
 
-def username_validator(value: str) -> None:
+def validate_username(value: str) -> None:
     if not _username_pattern.match(value):
         raise ValidationError(
             'The username can only cantains alphabets and digits.')
 
 
 class UserSerializer(BaseModelSerializer):
-    username = serializers.CharField(validators=[username_validator])
+    username = serializers.CharField(validators=[validate_username])
 
     password = serializers.CharField(
         write_only=True, validators=[validate_password])

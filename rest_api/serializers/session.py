@@ -1,5 +1,8 @@
+from django.db.models import Q
+from django.core.validators import MinValueValidator
+
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import PrimaryKeyRelatedField
+from rest_framework.serializers import PrimaryKeyRelatedField, IntegerField
 from rest_framework.validators import UniqueTogetherValidator
 
 from rest_api.models import Session, StudentMakeUpSession, Group, User
@@ -8,10 +11,55 @@ from .user import UserSerializer
 from .group import GroupSerializer
 
 
+class StartEndTimeValidator:
+    requires_context = True
+
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+        if 'start_datetime' in attrs or 'end_datetime' in attrs:
+            get = serializer.make_latest_field_getter(attrs)
+
+            start_datetime = get('start_datetime')
+            end_datetime = get('end_datetime')
+
+            if end_datetime < start_datetime:
+                raise ValidationError(
+                    'start_datetime must be earlier than end_datetime')
+
+
+class TimeOverlappingWithinGroupValidator:
+    requires_context = True
+
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+        if ('start_datetime' in attrs or
+            'end_datetime' in attrs or
+                'group' in attrs):
+            get = serializer.make_latest_field_getter(attrs)
+
+            group = get('group')
+            start_datetime = get('start_datetime')
+            end_datetime = get('end_datetime')
+
+            overlapping = Session.objects.filter(
+                start_datetime__lt=end_datetime,
+                end_datetime__gt=start_datetime,
+                group=group,
+            )
+
+            # eliminate the session being updated
+            if serializer.instance:
+                overlapping.filter(~Q(id=serializer.instance.id))
+
+            if overlapping.exists():
+                raise ValidationError(
+                    'session is overlapping with another session of the same group')
+
+
 class SessionSerializer(BaseModelSerializer):
     group = GroupSerializer(read_only=True)
     group_id = PrimaryKeyRelatedField(
         source='group', write_only=True, queryset=Group.objects.all())
+
+    check_in_deadline_mins = IntegerField(validators=[MinValueValidator(0)])
 
     class Meta:
         model = Session
@@ -20,17 +68,50 @@ class SessionSerializer(BaseModelSerializer):
                   'start_datetime', 'end_datetime',
                   'is_compulsory', 'allow_late_check_in', 'check_in_deadline_mins',
                   'is_active']
+        validators = [
+            StartEndTimeValidator(),
+            TimeOverlappingWithinGroupValidator()
+        ]
 
-    def validate(self, attrs):
-        get = self._make_latest_field_getter(attrs)
 
-        start_datetime = get('start_datetime')
-        end_datetime = get('end_datetime')
+class OriginalMakeUpSessionValidator:
+    requires_context = True
 
-        if end_datetime < start_datetime:
-            raise ValidationError(
-                'start_datetime must be earlier than end_datetime')
-        return super().validate(attrs)
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+        if 'original_session' in attrs or 'make_up_session' in attrs:
+            get = serializer.make_latest_field_getter(attrs)
+
+            original_session = get('original_session')
+            make_up_session = get('make_up_session')
+
+            if original_session.id == make_up_session.id:
+                raise ValidationError(
+                    'original_session and make_up_session cannot be the same session')
+
+            if original_session.group.id == make_up_session.group.id:
+                raise ValidationError(
+                    'original_session and make_up_session cannot be the sessions of the same group')
+
+            if original_session.group.course.id != make_up_session.group.course.id:
+                raise ValidationError(
+                    'original_session and make_up_session must be the sessions of the same course')
+
+
+class UserInOriginalGroupValidator:
+    requires_context = True
+
+    def __call__(self, attrs, serializer: BaseModelSerializer):
+        if 'original_session' in attrs or 'user' in attrs:
+            get = serializer.make_latest_field_getter(attrs)
+
+            original_session = get('original_session')
+            user = get('user')
+
+            if not Session.objects.filter(
+                    pk=original_session.id,
+                    group__students=user).exists():
+                raise ValidationError(
+                    'user must be a student of the group of original_session')
 
 
 class StudentMakeUpSessionSerializer(BaseModelSerializer):
@@ -51,9 +132,7 @@ class StudentMakeUpSessionSerializer(BaseModelSerializer):
         fields = ['id', 'user',  'user_id',
                   'original_session', 'original_session_id',
                   'make_up_session', 'make_up_session_id']
-        default_exclude_fields = ['user_id',
-                                  'original_session_id',
-                                  'make_up_session_id']
+
         validators = [
             UniqueTogetherValidator(
                 queryset=StudentMakeUpSession.objects.all(),
@@ -62,5 +141,7 @@ class StudentMakeUpSessionSerializer(BaseModelSerializer):
             UniqueTogetherValidator(
                 queryset=StudentMakeUpSession.objects.all(),
                 fields=('user', 'make_up_session')
-            )
+            ),
+            OriginalMakeUpSessionValidator(),
+            UserInOriginalGroupValidator(),
         ]

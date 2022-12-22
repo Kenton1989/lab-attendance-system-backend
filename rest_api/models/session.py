@@ -3,11 +3,6 @@ from django.core.validators import MinValueValidator
 
 from .user import User
 from .group import Group
-from .lab import Lab
-
-
-def get_default_ddl():
-    return 30
 
 
 class Session(models.Model):
@@ -22,8 +17,7 @@ class Session(models.Model):
 
     is_compulsory = models.BooleanField(default=True)
     allow_late_check_in = models.BooleanField(default=True)
-    check_in_deadline_mins = models.IntegerField(
-        validators=[MinValueValidator(0)], default=get_default_ddl)
+    check_in_deadline_mins = models.IntegerField(default=30)
 
     is_active = models.BooleanField(default=True)
 
