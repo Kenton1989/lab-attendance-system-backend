@@ -1,13 +1,18 @@
 from rest_api.models import Lab
 from rest_framework import serializers
-from .dynamic_field_mixin import DynamicFieldsMixin
+from .base import BaseModelSerializer
+from django.core.validators import MinValueValidator
 
 
-class LabSerializer(DynamicFieldsMixin, serializers.ModelSerializer):
+class LabSerializer(BaseModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         source='user',
         many=False,
         read_only=True
+    )
+
+    room_count = serializers.IntegerField(
+        validators=(MinValueValidator(1),)
     )
 
     username = serializers.CharField(source="user.username", read_only=True)

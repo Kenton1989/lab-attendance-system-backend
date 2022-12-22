@@ -6,10 +6,10 @@ from typing import Literal, List
 class DynamicFieldsMixin(serializers.ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
-    controls which fields should be displayed.
+    controls which fields should be displayed during reading.
 
     Usage:
-    >>> class MySerializer(DynamicFieldsMixin, ModelSerializer):
+    >>> class MySerializer(BaseModelSerializer):
     >>>     class Meta:
     >>>         # ... other necessary configurations ...
     >>>         fields = ['aaa', 'bbb', 'ccc']
@@ -22,6 +22,10 @@ class DynamicFieldsMixin(serializers.ModelSerializer):
     def __init__(self, *args, fields: List[str] | Literal['__all__'] | None = None, **kwargs):
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
+
+        # if writing is happening, don't remove any fields
+        if hasattr(self, 'initial_data'):
+            return
 
         if fields is None:
             request = self.context.get('request', None)

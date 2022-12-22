@@ -3,16 +3,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.contrib.auth.models import UserManager
 from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
-import re
-
-_username_pattern = re.compile(r'^\w+$')
-
-
-def username_validator(value: str) -> None:
-    if not _username_pattern.match(value):
-        raise ValidationError(
-            'The username can only cantains alphabets and digits.')
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -30,7 +20,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=150,
         unique=True,
         help_text='Required. 150 characters or fewer. Letters and digits only.',
-        validators=[username_validator],
         error_messages={
             'unique': 'A user with that username already exists.',
         }

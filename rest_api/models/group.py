@@ -1,6 +1,8 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from .course import Course
 from .user import User
+from .lab import Lab
 
 
 class Group(models.Model):
@@ -10,6 +12,15 @@ class Group(models.Model):
         related_name='groups'
     )
     name = models.CharField(max_length=20)
+    lab = models.ForeignKey(
+        Lab,
+        on_delete=models.CASCADE,
+        related_name='sessions'
+    )
+    room_no = models.IntegerField(
+        null=True,
+        validators=(MinValueValidator(1),)
+    )
     is_active = models.BooleanField(default=True)
 
     supervisors = models.ManyToManyField(
@@ -37,7 +48,8 @@ class Group(models.Model):
         ]
 
         indexes = [
-            models.Index(fields=['course']),
+            models.Index(fields=['course', 'lab']),
+            models.Index(fields=['lab']),
         ]
 
     def __str__(self):

@@ -1,31 +1,16 @@
 from django.db import models
 from django.db.models import F, Q
-from datetime import timedelta, date
-from django.core.exceptions import ValidationError
+from datetime import timedelta
 
-_monday_code = 0
-
-
-def monday_validator(value: date) -> None:
-    if value.weekday() != _monday_code:
-        raise ValidationError(
-            'the date is not monday')
+_MONDAY_CODE = 2
 
 
 class Week(models.Model):
     name = models.CharField(max_length=20, unique=True)
-    monday = models.DateField(validators=[monday_validator])
-    next_monday = models.DateField(validators=[monday_validator])
+    monday = models.DateField()
+    next_monday = models.DateField()
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=Q(next_monday=F('monday')+timedelta(days=7)),
-                name='ensure_7_days_gap',
-                violation_error_message='next_monday must be exactly 7 days greater then monday',
-            )
-        ]
-
         indexes = [
             models.Index(fields=['monday', 'next_monday']),
         ]

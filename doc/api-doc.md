@@ -108,6 +108,8 @@
     - user_id
     - original_session_id
     - make_up_session_id
+    - original_group_id
+    - make_up_group_id
 - /student_make_up_sessions/{id}
 
 

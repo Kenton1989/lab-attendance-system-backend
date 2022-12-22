@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Q, F
 from django.core.validators import MinValueValidator
 
 from .user import User
@@ -18,16 +17,6 @@ class Session(models.Model):
         related_name='sessions'
     )
 
-    lab = models.ForeignKey(
-        Lab,
-        on_delete=models.CASCADE,
-        related_name='sessions'
-    )
-    room_no = models.IntegerField(
-        null=True,
-        validators=(MinValueValidator(1),)
-    )
-
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
 
@@ -39,20 +28,8 @@ class Session(models.Model):
     is_active = models.BooleanField(default=True)
 
     class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=Q(end_datetime__gte=F('start_datetime')),
-                name='session_end_datetime_after_start_datetime',
-                violation_error_message='end_datetime must be greater than start_datetime',
-            ),
-            models.CheckConstraint(check=Q(room_no__gte=1),
-                                   name='group_valid_room_number',
-                                   violation_error_message='room_no must be positive'),
-        ]
-
         indexes = [
-            models.Index(fields=['group', 'lab', 'start_datetime']),
-            models.Index(fields=['lab', 'start_datetime']),
+            models.Index(fields=['group', 'start_datetime']),
             models.Index(fields=['start_datetime']),
         ]
 
