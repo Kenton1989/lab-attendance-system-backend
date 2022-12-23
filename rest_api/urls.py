@@ -15,6 +15,10 @@ rest_router.register(r'student_make_up_sessions',
                      views.StudentMakeUpSessionViewSet)
 rest_router.register(r'student_attendances', views.StudentAttendanceViewSet)
 rest_router.register(r'teacher_attendances', views.TeacherAttendanceViewSet)
+rest_router.register(r'statistics/student_attendances',
+                     views.StudentAttendanceCountsViewSet, basename='statistics-student-attendance')
+rest_router.register(r'statistics/teacher_attendances',
+                     views.TeacherAttendanceCountsViewSet, basename='statistics-teacher-attendance')
 
 urlpatterns = [
     # authentication API

@@ -59,10 +59,9 @@ class UniqueCourseStudentValidator:
             student = get('student')
             course = group.course
             if GroupStudent.objects.filter(
-                ~Q(group=group),
                 group__course=course,
                 student=student
-            ).exists():
+            ).exclude(group=group).exists():
                 raise ValidationError(
                     'the student is already in another group of the same course')
 

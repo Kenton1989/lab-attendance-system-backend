@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from typing import Literal, List
 
 
-class DynamicFieldsMixin(serializers.ModelSerializer):
+class DynamicFieldsMixin():
     """
     A ModelSerializer that takes an additional `fields` argument that
     controls which fields should be displayed during reading. All writable fields
@@ -36,7 +36,7 @@ class DynamicFieldsMixin(serializers.ModelSerializer):
 
         if fields is not None:
             include_fields = fields
-        else:
+        elif hasattr(self, 'Meta'):
             meta = self.Meta
             if hasattr(meta, 'default_include_fields'):
                 include_fields = meta.default_include_fields

@@ -5,3 +5,4 @@ from .lab import LabViewSet
 from .group import GroupViewSet, GroupStudentViewSet
 from .session import SessionViewSet, StudentMakeUpSessionViewSet
 from .attendance import StudentAttendanceViewSet, TeacherAttendanceViewSet
+from .statistics import StudentAttendanceCountsViewSet, TeacherAttendanceCountsViewSet

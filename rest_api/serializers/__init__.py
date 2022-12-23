@@ -5,3 +5,4 @@ from .course import CourseSerializer
 from .user import UserSerializer
 from .week import WeekSerializer
 from .lab import LabSerializer
+from .statistics import StudentAttendanceCountsSerializer, TeacherAttendanceCountsSerializer

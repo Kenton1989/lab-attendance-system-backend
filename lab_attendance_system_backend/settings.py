@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'dbsettings',
     'rest_framework',
     'knox',
+    'django_filters',
     'rest_api',
 ]
 

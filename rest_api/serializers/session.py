@@ -47,7 +47,7 @@ class TimeOverlappingWithinGroupValidator:
 
             # eliminate the session being updated
             if serializer.instance:
-                overlapping.filter(~Q(id=serializer.instance.id))
+                overlapping.exclude(id=serializer.instance.id)
 
             if overlapping.exists():
                 raise ValidationError(

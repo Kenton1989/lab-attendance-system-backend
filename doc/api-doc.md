@@ -132,20 +132,29 @@
 - /teacher_attendances/{id}
 
 
-- /student_attendance/statistics
+- /statistics/student_attendance_counts/
   - fields=course/group/student/teacher,attendance_rate
   - available query
-    - limit, offset, orderby
-    - group_by=course/group/student/teacher
-    - course_id
-    - group_id
-    - student_id
-    - teacher_id
-- /course/statistics/students_attendance_rates
+    - limit, offset, ordering
+    - grouping=course/group/student/teacher
+    - course
+    - course_coordinators_contain
+    - group
+    - group_supervisors_contain
+    - student
+    - attending_teachers_contain
+
+
+- /statistics/teacher_attendance_counts/
+  - fields=course/group/teacher,attendance_rate
   - available query
-    - limit, offset, orderby
-    - student_id
-    - teacher_id
+    - limit, offset, ordering
+    - grouping=course/group/teacher
+    - course
+    - course_coordinators_contain
+    - group
+    - group_supervisors_contain
+    - teacher
 
 lab per session? session outside of lab?
 teacher per session?
