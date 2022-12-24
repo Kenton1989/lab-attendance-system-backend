@@ -30,18 +30,18 @@ class BaseAttendanceFilter(filters.FilterSet):
 
 class StudentAttendanceFilter(BaseAttendanceFilter):
     student = filters.ModelChoiceFilter(
-        field_name='user',
+        field_name='attender',
         queryset=User.objects.all()
     )
     attending_teachers_contain = filters.ModelChoiceFilter(
-        field_name='session__teacher_attendances__user',
+        field_name='session__teacher_attendances__attender',
         queryset=User.objects.all()
     )
 
 
 class TeacherAttendanceFilter(BaseAttendanceFilter):
     teacher = filters.ModelChoiceFilter(
-        field_name='user',
+        field_name='attender',
         queryset=User.objects.all()
     )
 

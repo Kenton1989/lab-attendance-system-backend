@@ -2,13 +2,14 @@ from django.db.models import Q
 from django.core.validators import MinValueValidator
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import PrimaryKeyRelatedField, IntegerField
+from rest_framework.serializers import PrimaryKeyRelatedField, IntegerField, SerializerMethodField
 from rest_framework.validators import UniqueTogetherValidator
 
-from rest_api.models import Session, StudentMakeUpSession, Group, User
+from rest_api.models import Session, StudentMakeUpSession, Group, User, Week
 from .base import BaseModelSerializer
 from .user import UserSerializer
 from .group import GroupSerializer
+from .week import WeekSerializer
 
 
 class StartEndTimeValidator:
@@ -61,17 +62,31 @@ class SessionSerializer(BaseModelSerializer):
 
     check_in_deadline_mins = IntegerField(validators=[MinValueValidator(0)])
 
+    week = SerializerMethodField()
+
     class Meta:
         model = Session
         fields = ['id',
                   'group', 'group_id',
-                  'start_datetime', 'end_datetime',
+                  'start_datetime', 'end_datetime', 'week',
                   'is_compulsory', 'allow_late_check_in', 'check_in_deadline_mins',
                   'is_active']
         validators = [
             StartEndTimeValidator(),
             TimeOverlappingWithinGroupValidator()
         ]
+
+    def get_week(self, obj: Session):
+        start_datetime = obj.start_datetime
+        start_date = start_datetime.date()
+        q = Week.objects.filter(
+            monday__lte=start_date,
+            next_monday__gt=start_date
+        )
+        if q.exists():
+            return WeekSerializer(instance=q.first(), fields=['id', 'name']).data
+        else:
+            return None
 
 
 class OriginalMakeUpSessionValidator:

@@ -65,8 +65,8 @@
   - write only fields=supervisors_ids, teachers_ids
   - available query
     - search, is_active, limit, offset
-    - course_id
-    - lab_id
+    - course
+    - lab
     - supervisors_contain
     - teachers_contain
     - students_contain
@@ -94,11 +94,10 @@
   - write only: group_id, lab_id
   - available query
     - is_active, limit, offset
-    - lab_id
-    - group_id
-    - user_id
-    - min_start_datetime
-    - max_start_datetime
+    - lab
+    - group
+    - start_datetime_before
+    - start_datetime_after
 - /sessions/{id}
 
 - /student_make_up_sessions
@@ -106,11 +105,11 @@
   - write only: user_id,original_session_id,make_up_session_id
   - available query
     - limit, offset
-    - user_id
-    - original_session_id
-    - make_up_session_id
-    - original_group_id
-    - make_up_group_id
+    - user
+    - original_session
+    - make_up_session
+    - original_group
+    - make_up_group
 - /student_make_up_sessions/{id}
 
 
@@ -121,13 +120,13 @@
   - write only: session_id,user_id
   - available query
     - limit, offset
-    - course_id
-    - group_id
-    - sessions_id
-    - user_id
-    - teacher_id
-    - min_check_in_time
-    - max_check_in_time
+    - course
+    - group
+    - sessions
+    - attender
+    - teacher
+    - check_in_time_before
+    - check_in_time_after
 - /student_attendances/{id}
 - /teacher_attendances
 - /teacher_attendances/{id}

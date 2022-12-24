@@ -173,12 +173,12 @@ def create_dummy_attendance(*_):
         for stud in sess.group.students.all():
             models.StudentAttendance.objects.create(
                 session=sess,
-                user=stud,
+                attender=stud,
             ).save()
         for ta in sess.group.teachers.all():
             models.TeacherAttendance.objects.create(
                 session=sess,
-                user=ta,
+                attender=ta,
             ).save()
 
 

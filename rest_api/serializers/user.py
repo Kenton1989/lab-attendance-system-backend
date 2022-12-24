@@ -15,8 +15,13 @@ def validate_username(value: str) -> None:
             'the username can only contain alphabets and digits')
 
 
+class StoreUppercaseCharField(serializers.CharField):
+    def to_internal_value(self, data):
+        return super().to_internal_value(data).upper()
+
+
 class UserSerializer(BaseModelSerializer):
-    username = serializers.CharField(validators=[validate_username])
+    username = StoreUppercaseCharField(validators=[validate_username])
 
     password = serializers.CharField(
         write_only=True, validators=[validate_password])

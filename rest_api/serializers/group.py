@@ -28,9 +28,27 @@ class GroupSerializer(BaseModelSerializer):
     course_id = PrimaryKeyRelatedField(
         source='course', write_only=True, queryset=Course.objects.all())
 
-    lab = LabSerializer(read_only=True)
+    lab = LabSerializer(
+        read_only=True,
+    )
     lab_id = PrimaryKeyRelatedField(
         source='lab', write_only=True, queryset=Lab.objects.all())
+
+    teachers = UserSerializer(read_only=True, many=True)
+    teacher_ids = PrimaryKeyRelatedField(
+        source='teachers',
+        many=True,
+        write_only=True,
+        queryset=User.objects.all()  # TODO: limit to TA
+    )
+
+    supervisors = UserSerializer(read_only=True, many=True)
+    supervisor_ids = PrimaryKeyRelatedField(
+        source='supervisors',
+        many=True,
+        write_only=True,
+        queryset=User.objects.all()  # TODO: limit to staff
+    )
 
     room_no = IntegerField(validators=[MinValueValidator(1)])
 
@@ -38,7 +56,10 @@ class GroupSerializer(BaseModelSerializer):
         model = Group
         fields = ['id', 'course', 'course_id', 'name',
                   'lab', 'lab_id', 'room_no',
+                  'teachers', 'teacher_ids',
+                  'supervisors', 'supervisor_ids',
                   'is_active']
+        default_exclude_fields = ['supervisors', 'teachers']
 
         validators = [
             UniqueTogetherValidator(

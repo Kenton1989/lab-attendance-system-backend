@@ -21,11 +21,11 @@ def group_by_group(query_set: QuerySet) -> QuerySet:
 
 
 def group_by_attender(query_set: QuerySet) -> QuerySet:
-    return query_set.annotate(attender=F('user')).values('attender')
+    return query_set.annotate(attender=F('attender')).values('attender')
 
 
 def group_by_attending_teacher(query_set: QuerySet) -> QuerySet:
-    return query_set.annotate(teacher=F('session__teacher_attendances__user')).values('teacher')
+    return query_set.annotate(teacher=F('session__teacher_attendances__attender')).values('teacher')
 
 
 def _cal_attendance_counts_aggregate_params():

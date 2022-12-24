@@ -43,7 +43,7 @@ class StudentAttendance(AbstractAttendance):
         related_name='student_attendances'
     )
 
-    user = models.ForeignKey(
+    attender = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='student_attendances'
@@ -52,7 +52,7 @@ class StudentAttendance(AbstractAttendance):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['session', 'user'],
+                fields=['session', 'attender'],
                 name='unique_student_attendance_session',
                 violation_error_message='only one attendance record allowed per session per student'
             )
@@ -60,7 +60,7 @@ class StudentAttendance(AbstractAttendance):
 
         indexes = [
             models.Index(fields=['session']),
-            models.Index(fields=['user', 'session']),
+            models.Index(fields=['attender', 'session']),
         ]
 
 
@@ -71,7 +71,7 @@ class TeacherAttendance(AbstractAttendance):
         related_name='teacher_attendances'
     )
 
-    user = models.ForeignKey(
+    attender = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='teacher_attendances'
@@ -80,7 +80,7 @@ class TeacherAttendance(AbstractAttendance):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['session', 'user'],
+                fields=['session', 'attender'],
                 name='unique_teacher_attendance_session',
                 violation_error_message='only one attendance record allowed per session per teacher'
             )
@@ -88,5 +88,5 @@ class TeacherAttendance(AbstractAttendance):
 
         indexes = [
             models.Index(fields=['session']),
-            models.Index(fields=['user', 'session']),
+            models.Index(fields=['attender', 'session']),
         ]

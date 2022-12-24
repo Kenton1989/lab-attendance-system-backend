@@ -9,6 +9,13 @@ from .user import UserSerializer
 from .session import SessionSerializer
 
 
+def validate_time_earlier_than_now(datetime_value):
+    now = timezone.now()
+    if datetime_value > now:
+        raise ValidationError(
+            'last_modify must be earlier than request process time ({now})'.format(now=now.isoformat()))
+
+
 class UserInRelationshipOfSessionValidator:
     requires_context = True
 
@@ -16,36 +23,39 @@ class UserInRelationshipOfSessionValidator:
         self.relationship = relationship
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'session' in attrs or 'user' in attrs:
+        if 'session' in attrs or 'attender' in attrs:
             get = serializer.make_latest_field_getter(attrs)
 
             session = get('session')
-            user = get('user')
+            attender = get('attender')
 
             if not Session.objects.filter(
                     pk=session.id,
-                    **{self.relationship: user}).exists():
+                    **{self.relationship: attender}).exists():
                 raise ValidationError(
-                    'user must be a student of the group of session')
+                    'attender must be a student of the group of session')
 
 
 class BaseAttendanceSerializer(BaseModelSerializer):
-    user = UserSerializer(read_only=True)
-    user_id = PrimaryKeyRelatedField(
-        source='user', write_only=True, queryset=User.objects.all())
+    attender = UserSerializer(read_only=True)
+    attender_id = PrimaryKeyRelatedField(
+        source='attender', write_only=True, queryset=User.objects.all())
 
     session = SessionSerializer(read_only=True)
     session_id = PrimaryKeyRelatedField(
         source='session', write_only=True, queryset=Session.objects.all())
 
-    last_modify = DateTimeField(default=timezone.now)
+    last_modify = DateTimeField(
+        default=timezone.now,
+        validators=(validate_time_earlier_than_now,)
+    )
 
     class Meta:
-        fields = ['id',
+        fields = ('id',
                   'session', 'session_id',
-                  'user', 'user_id',
+                  'attender', 'attender_id',
                   'check_in_state', 'check_in_datetime',
-                  'last_modify', 'remark', 'is_active']
+                  'last_modify', 'remark', 'is_active')
         validators = []
 
 
@@ -55,7 +65,7 @@ class StudentAttendanceSerializer(BaseAttendanceSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=StudentAttendance.objects.all(),
-                fields=('session', 'user')
+                fields=('session', 'attender')
             ),
             UserInRelationshipOfSessionValidator('group__students'),
         ] + BaseAttendanceSerializer.Meta.validators
@@ -67,7 +77,7 @@ class TeacherAttendanceSerializer(BaseAttendanceSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=TeacherAttendance.objects.all(),
-                fields=('session', 'user')
+                fields=('session', 'attender')
             ),
             UserInRelationshipOfSessionValidator('group__teachers'),
         ] + BaseAttendanceSerializer.Meta.validators
