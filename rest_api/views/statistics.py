@@ -2,7 +2,7 @@ from rest_framework import mixins, viewsets, exceptions, serializers
 from django_filters import rest_framework as filters
 from rest_framework.filters import OrderingFilter
 from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group, User
-from rest_api.statistics import attendance_counts
+from rest_api.statistics import attendance_stat
 from rest_api.serializers import StudentAttendanceCountsSerializer, TeacherAttendanceCountsSerializer
 
 
@@ -50,20 +50,20 @@ class BaseAttendanceCountsViewSet(mixins.ListModelMixin,
                                   viewsets.GenericViewSet):
 
     filter_backends = [OrderingFilter]
-    ordering_fields = attendance_counts.RESULT_FIELD_NAMES
+    ordering_fields = attendance_stat.RESULT_FIELD_NAMES
 
     pre_grouping_filter_class = filters.FilterSet
     valid_grouping = {}
 
     def get_grouped_results(self, grouper, queryset):
-        return attendance_counts.cal_student_attendance_counts(grouper=grouper, queryset=queryset)
+        return attendance_stat.cal_student_attendance_stat(grouper=grouper, queryset=queryset)
 
     def get_queryset(self):
         grouping = self.request.query_params.get('grouping', '')
         grouper = self.valid_grouping.get(grouping, None)
         if grouper is None:
             raise exceptions.ValidationError({
-                "grouping": ['grouping is unknown'],
+                'grouping': ['grouping is unknown'],
             })
 
         res = self.queryset
@@ -83,15 +83,15 @@ class StudentAttendanceCountsViewSet(BaseAttendanceCountsViewSet):
 
     pre_grouping_filter_class = StudentAttendanceFilter
     valid_grouping = {
-        '': attendance_counts.no_grouping,
-        'course': attendance_counts.group_by_course,
-        'group': attendance_counts.group_by_group,
-        'attender': attendance_counts.group_by_attender,
-        'teacher': attendance_counts.group_by_attending_teacher,
+        '': attendance_stat.no_grouping,
+        'course': attendance_stat.group_by_course,
+        'group': attendance_stat.group_by_group,
+        'attender': attendance_stat.group_by_attender,
+        'teacher': attendance_stat.group_by_attending_teacher,
     }
 
     def get_grouped_results(self, grouper, queryset):
-        return attendance_counts.cal_student_attendance_counts(grouper=grouper, queryset=queryset)
+        return attendance_stat.cal_student_attendance_stat(grouper=grouper, queryset=queryset)
 
 
 class TeacherAttendanceCountsViewSet(BaseAttendanceCountsViewSet):
@@ -100,11 +100,11 @@ class TeacherAttendanceCountsViewSet(BaseAttendanceCountsViewSet):
 
     pre_grouping_filter_class = TeacherAttendanceFilter
     valid_grouping = {
-        '': attendance_counts.no_grouping,
-        'course': attendance_counts.group_by_course,
-        'group': attendance_counts.group_by_group,
-        'attender': attendance_counts.group_by_attender,
+        '': attendance_stat.no_grouping,
+        'course': attendance_stat.group_by_course,
+        'group': attendance_stat.group_by_group,
+        'attender': attendance_stat.group_by_attender,
     }
 
     def get_grouped_results(self, grouper, queryset):
-        return attendance_counts.cal_teacher_attendance_counts(grouper=grouper, queryset=queryset)
+        return attendance_stat.cal_teacher_attendance_stat(grouper=grouper, queryset=queryset)

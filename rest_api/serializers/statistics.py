@@ -6,7 +6,7 @@ from .mixins import DynamicFieldsMixin
 from rest_api.models import User, Course, Group
 
 
-class BaseAttendanceCountsSerializer(serializers.Serializer):
+class BaseAttendanceCountsSerializer(DynamicFieldsMixin, serializers.Serializer):
     course = serializers.IntegerField(required=False)
     group = serializers.IntegerField(required=False)
     teacher = serializers.IntegerField(required=False)
@@ -16,16 +16,25 @@ class BaseAttendanceCountsSerializer(serializers.Serializer):
     overall_attend_count = serializers.IntegerField(read_only=True)
     overall_late_count = serializers.IntegerField(read_only=True)
     overall_absent_count = serializers.IntegerField(read_only=True)
+    overall_attend_rate = serializers.FloatField(read_only=True)
+    overall_late_rate = serializers.FloatField(read_only=True)
+    overall_absent_rate = serializers.FloatField(read_only=True)
 
     compulsory_total_count = serializers.IntegerField(read_only=True)
     compulsory_attend_count = serializers.IntegerField(read_only=True)
     compulsory_late_count = serializers.IntegerField(read_only=True)
     compulsory_absent_count = serializers.IntegerField(read_only=True)
+    compulsory_attend_rate = serializers.FloatField(read_only=True)
+    compulsory_late_rate = serializers.FloatField(read_only=True)
+    compulsory_absent_rate = serializers.FloatField(read_only=True)
 
     non_compulsory_total_count = serializers.IntegerField(read_only=True)
     non_compulsory_attend_count = serializers.IntegerField(read_only=True)
     non_compulsory_late_count = serializers.IntegerField(read_only=True)
     non_compulsory_absent_count = serializers.IntegerField(read_only=True)
+    non_compulsory_attend_rate = serializers.FloatField(read_only=True)
+    non_compulsory_late_rate = serializers.FloatField(read_only=True)
+    non_compulsory_absent_rate = serializers.FloatField(read_only=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

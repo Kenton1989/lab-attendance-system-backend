@@ -19,6 +19,7 @@
   - search, is_active, limit, offset
 - /users/{id} (id can be "me", which has looser permission check)
   - write only fields=password
+- /users/{id}/rules
 - /users/{id}/coordinator_of_courses
 - /users/{id}/student_of_courses
 <!-- - /users/{id}/teacher_of_courses -->

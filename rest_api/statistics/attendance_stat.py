@@ -1,6 +1,11 @@
-from django.db.models import QuerySet, Q, F, Count, Value
+from django.db.models import QuerySet, Q, F, Count, Value, FloatField
+from django.db.models.functions import Cast
 from rest_api.models import StudentAttendance, TeacherAttendance, CheckInState
 from typing import Callable
+
+
+def _cast_float(expr):
+    return Cast(expr, FloatField())
 
 
 def no_grouping(query_set: QuerySet) -> QuerySet:
@@ -39,13 +44,17 @@ def _cal_attendance_counts_aggregate_params():
     result = {}
     for stat_range, range_filter in stat_ranges.items():
         total_count = Count('pk', filter=range_filter)
-        name = '{}_total_count'.format(stat_range)
-        result[name] = total_count
+        total_name = '{}_total_count'.format(stat_range)
+        result[total_name] = total_count
 
         for state, state_filter in states.items():
-            name = '{}_{}_count'.format(stat_range, state)
+            count_name = '{}_{}_count'.format(stat_range, state)
             count = Count('pk', filter=range_filter & state_filter)
-            result[name] = count
+            result[count_name] = count
+
+            rate_name = '{}_{}_rate'.format(stat_range, state)
+            rate = _cast_float(count) / _cast_float(total_count)
+            result[rate_name] = rate
 
     return result
 
@@ -68,7 +77,7 @@ def _cal_attendance_counts(
     return results
 
 
-def cal_student_attendance_counts(
+def cal_student_attendance_stat(
     grouper: Callable[[QuerySet], QuerySet],
     filter: Q = Q(),
     queryset: QuerySet = StudentAttendance.objects.all()
@@ -76,7 +85,7 @@ def cal_student_attendance_counts(
     return _cal_attendance_counts(queryset=queryset, grouper=grouper, filter=filter)
 
 
-def cal_teacher_attendance_counts(
+def cal_teacher_attendance_stat(
     grouper: Callable[[QuerySet], QuerySet],
     filter: Q = Q(),
     queryset: QuerySet = TeacherAttendance.objects.all()
