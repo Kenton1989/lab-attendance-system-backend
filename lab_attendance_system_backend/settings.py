@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'dbsettings',
+    'dynamic_preferences',
     'rest_framework',
     'knox',
     'django_filters',

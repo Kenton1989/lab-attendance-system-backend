@@ -17,19 +17,22 @@
 - /users
   - fields=id,username,email,display_name,is_active
   - search, is_active, limit, offset
-- /users/{id} (id can be "me", which has looser permission check)
+- /users/{id} (id can be "me", which is currently login user)
   - write only fields=password
-- /users/{id}/rules
-- /users/{id}/coordinator_of_courses
-- /users/{id}/student_of_courses
+- /users/{id}/roles
+<!-- - /users/{id}/coordinator_of_courses -->
+<!-- - /users/{id}/student_of_courses -->
 <!-- - /users/{id}/teacher_of_courses -->
-- /users/{id}/supervisor_of_groups
-- /users/{id}/student_of_groups
-- /users/{id}/teacher_of_groups
-- /users/{id}/executive_of_labs
+<!-- - /users/{id}/supervisor_of_groups -->
+<!-- - /users/{id}/student_of_groups -->
+<!-- - /users/{id}/teacher_of_groups -->
+<!-- - /users/{id}/executive_of_labs 
+<!-- - /users/{id}/student_make_up_sessions -->
+- /users/{id}/managed_labs(/id)
+- /users/{id}/managed_courses(/id)
+- /users/{id}/managed_groups?course=1&(/id)
 - /users/{id}/student_attendances
-- /users/{id}/teacher_attendances
-- /users/{id}/student_make_up_sessions
+- /users/{id}/student_attendances/visible_courses
 
 
 - /labs
@@ -40,8 +43,8 @@
   - write only fields=executives_ids
 <!-- - /labs/{id}/executives -->
 <!-- - /labs/{id}/executives/{id} -->
-- /labs/{id}/groups
-- /labs/{id}/sessions
+<!-- - /labs/{id}/groups -->
+<!-- - /labs/{id}/sessions -->
 
 
 - /courses

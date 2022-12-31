@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from .base import BaseModelViewSet
 from rest_api.serializers import StudentMakeUpSessionSerializer
 from rest_api.models import StudentMakeUpSession, Group
 from django_filters import rest_framework as filters
@@ -19,7 +19,7 @@ class StudentMakeUpSessionFilterSet(filters.FilterSet):
         fields = ('user', 'original_session', 'make_up_session')
 
 
-class StudentMakeUpSessionViewSet(ModelViewSet):
+class StudentMakeUpSessionViewSet(BaseModelViewSet):
     queryset = StudentMakeUpSession.objects.all()
     serializer_class = StudentMakeUpSessionSerializer
     filter_backends = (filters.DjangoFilterBackend,)

@@ -1,7 +1,8 @@
 from rest_api import models
 from datetime import date, timedelta
-from random import randrange, choices, choice
+from random import randrange, sample, choice
 from datetime import timedelta, datetime, time
+from django.contrib.auth.models import Group
 
 
 class DummyCfg:
@@ -49,7 +50,7 @@ def rand_student():
 def create_dummy_user(*_):
     cfg = DummyCfg()
 
-    def make_user(count, username, display_name, email):
+    def make_user(count, username, display_name, email, groups):
         for i in range(count):
             user = models.User.objects.create(
                 username=username.format(id=i),
@@ -57,21 +58,29 @@ def create_dummy_user(*_):
                 email=email.format(id=i),
             )
             user.set_password(cfg.PASSWORD)
+
+            for grp_name in groups:
+                grp = Group.objects.get(name=grp_name)
+                user.groups.add(grp)
             user.save()
+
             print('created', username.format(id=i))
 
     make_user(cfg.STAFF_CNT,
               'STAFF{id:04d}',
               'Staff {id}',
-              'staff{id:04d}@ntu.edu.sg')
+              'staff{id:04d}@ntu.edu.sg',
+              ['staff'])
     make_user(cfg.TEACHER_CNT,
               'TA{id:04d}',
               'TA {id}',
-              'ta{id:04d}@e.ntu.edu.sg')
+              'ta{id:04d}@e.ntu.edu.sg',
+              ['teacher'])
     make_user(cfg.STUDENT_CNT,
               'STUD{id:04d}',
               'Student {id}',
-              'stud{id:04d}@e.ntu.edu.sg')
+              'stud{id:04d}@e.ntu.edu.sg',
+              ['student'])
 
 
 def create_dummy_week(*_):
@@ -94,14 +103,16 @@ def create_dummy_week(*_):
 
 def create_dummy_lab(*_):
     cfg = DummyCfg()
+    lab_grp = Group.objects.get(name='lab')
 
     for i in range(cfg.LAB_CNT):
-        user = models.User.objects.create(
+        user, _ = models.User.objects.get_or_create(
             username='LAB{}'.format(i+1),
             display_name='Lab {}'.format(i+1),
             email='scse-enquiries@ntu.edu.sg'
         )
         user.set_password(cfg.PASSWORD)
+        user.groups.add(lab_grp)
         user.save()
         lab = models.Lab.objects.create(
             user=user,
@@ -129,7 +140,7 @@ def create_dummy_group(*_):
     cfg = DummyCfg()
     all_codes = ['SC{:04d}'.format(i+1) for i in range(cfg.COURSE_CNT)]
     for i in range(cfg.GROUP_CNT):
-        codes = choices(all_codes, k=2)
+        codes = sample(all_codes, k=2)
         for code in codes:
             course = models.Course.objects.get(code=code)
             name = 'CZ{}'.format(i+1)

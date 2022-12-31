@@ -1,8 +1,9 @@
 from django.db import models
 from .user import User
 
+
 class Course(models.Model):
-    code = models.CharField(max_length=20, unique=True)
+    code = models.CharField(max_length=20, unique=True, db_index=True)
     title = models.CharField(max_length=200)
 
     coordinators = models.ManyToManyField(

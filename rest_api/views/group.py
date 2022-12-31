@@ -1,7 +1,8 @@
 from rest_framework.filters import SearchFilter
-from rest_framework.viewsets import ModelViewSet
+from .base import BaseModelViewSet
 from rest_api.serializers import GroupSerializer
 from rest_api.models import Group, User
+from rest_api.permissions import GroupAccessPermission
 from django_filters import rest_framework as filters
 
 
@@ -21,12 +22,14 @@ class GroupFilterSet(filters.FilterSet):
 
     class Meta:
         model = Group
-        fields = ('course', 'lab',)
+        fields = ('course', 'lab', 'is_active',)
 
 
-class GroupViewSet(ModelViewSet):
+class GroupViewSet(BaseModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
     filter_backends = (filters.DjangoFilterBackend, SearchFilter,)
     search_fields = ('name',)
+
+    permission_classes = (GroupAccessPermission, )

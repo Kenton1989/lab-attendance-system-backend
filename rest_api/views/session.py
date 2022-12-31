@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from .base import BaseModelViewSet
 from rest_api.serializers import SessionSerializer
 from rest_api.models import Session, Lab
 from django_filters import rest_framework as filters
@@ -14,10 +14,10 @@ class SessionFilterSet(filters.FilterSet):
 
     class Meta:
         model = Session
-        fields = ('group', )
+        fields = ('group', 'is_active',)
 
 
-class SessionViewSet(ModelViewSet):
+class SessionViewSet(BaseModelViewSet):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
     filter_backends = (filters.DjangoFilterBackend,)

@@ -1,7 +1,8 @@
 from rest_framework.filters import SearchFilter
-from rest_framework.viewsets import ModelViewSet
+from .base import BaseModelViewSet
 from rest_api.serializers import CourseSerializer
 from rest_api.models import Course, User
+from rest_api.permissions import CourseAccessPermission
 from django_filters import rest_framework as filters
 
 
@@ -15,11 +16,20 @@ class CourseFilterSet(filters.FilterSet):
         queryset=User.objects.all(),
     )
 
+    class Meta:
+        model = Course
+        fields = ('is_active',)
 
-class CourseViewSet(ModelViewSet):
+
+class CourseViewSet(BaseModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
     filter_backends = (filters.DjangoFilterBackend, SearchFilter,)
     search_fields = ('code', 'title',)
     filterset_class = CourseFilterSet
+
+    permission_classes = (CourseAccessPermission, )
+
+    def get_queryset(self):
+        return super().get_queryset()

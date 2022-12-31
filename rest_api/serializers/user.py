@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_api.models import User
 from django.contrib.auth.password_validation import validate_password
 from .base import BaseModelSerializer
+from .auth_group import AuthGroupSerializer
 
 from django.core.exceptions import ValidationError
 import re
@@ -28,10 +29,14 @@ class UserSerializer(BaseModelSerializer):
 
     email = serializers.EmailField()
 
+    groups = AuthGroupSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'email',
-                  'display_name', 'is_active')
+        fields = ['id', 'username', 'password',
+                  'email', 'display_name', 'groups',
+                  'is_active']
+        default_exclude_fields = ['groups']
 
     def create(self, validated_data):
         user: User = super().create(validated_data)

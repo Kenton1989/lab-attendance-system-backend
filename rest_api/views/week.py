@@ -1,11 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
+from .base import BaseModelViewSet
 from rest_framework.exceptions import ValidationError
 from rest_api.serializers import WeekSerializer
 from rest_api.models import Week
 from datetime import datetime
 
 
-class WeekViewSet(ModelViewSet):
+class WeekViewSet(BaseModelViewSet):
     queryset = Week.objects.all()
     serializer_class = WeekSerializer
 

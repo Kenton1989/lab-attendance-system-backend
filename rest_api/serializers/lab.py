@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from rest_api.models import Lab
 from .base import BaseModelSerializer
+from .user import UserSerializer
 
 
 class IncreasingLabRoomCountValidator:
@@ -34,10 +35,14 @@ class LabSerializer(BaseModelSerializer):
     display_name = serializers.CharField(
         source="user.display_name", read_only=True)
 
+    executives = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Lab
         fields = ['id', 'username', 'display_name',
-                  'room_count', 'is_active']
+                  'room_count',
+                  'executives',
+                  'is_active']
         validators = [
             IncreasingLabRoomCountValidator()
         ]

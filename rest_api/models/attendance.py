@@ -16,6 +16,11 @@ CHECK_IN_STATE_CHOICES = [
     (CheckInState.ATTEND, 'attend'),
 ]
 
+INITIAL_MODIFY_TIME = timezone.datetime(
+    2000, 1, 1,
+    tzinfo=timezone.utc
+)
+
 
 class AbstractAttendance(models.Model):
     check_in_state = models.CharField(
@@ -27,6 +32,8 @@ class AbstractAttendance(models.Model):
     check_in_datetime = models.DateTimeField(null=True)
 
     last_modify = models.DateTimeField(default=timezone.now)
+
+    last_notify = models.DateTimeField(default=INITIAL_MODIFY_TIME)
 
     remark = models.CharField(max_length=200, null=True)
 
