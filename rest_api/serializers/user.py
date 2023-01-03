@@ -29,14 +29,14 @@ class UserSerializer(BaseModelSerializer):
 
     email = serializers.EmailField()
 
-    groups = AuthGroupSerializer(many=True, read_only=True)
+    roles = AuthGroupSerializer(source='groups', many=True, read_only=True)
 
     class Meta:
         model = User
         fields = ['id', 'username', 'password',
-                  'email', 'display_name', 'groups',
+                  'email', 'display_name', 'roles',
                   'is_active']
-        default_exclude_fields = ['groups']
+        default_exclude_fields = ['roles']
 
     def create(self, validated_data):
         user: User = super().create(validated_data)

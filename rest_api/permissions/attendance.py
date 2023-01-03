@@ -12,6 +12,16 @@ from .session import SessionAccessPermission
 class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
     _session_permission = SessionAccessPermission()
 
+    def has_create_object_permission(self, user, request, view, serializer):
+        assert isinstance(serializer,
+                          (StudentAttendanceSerializer, TeacherAttendanceSerializer))
+        session: Session = serializer['session']
+        return (
+            self._can_check_in(user, session, timezone.now()) or
+            self._session_permission.has_update_object_permission(
+                user, request, view, session)
+        )
+
     def has_update_object_permission(self, user, request, view, obj):
         assert isinstance(obj, (StudentAttendance, TeacherAttendance))
         session = obj.session
@@ -26,20 +36,9 @@ class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
 
     def get_managers(self,
                      obj: StudentAttendance | TeacherAttendance,
-                     user_queryset: QuerySet = User.objects.all()
-                     ) -> QuerySet:
+                     user_queryset: QuerySet = User.objects.all()) -> QuerySet:
         session = obj.session
         return self._session_permission.get_managers(session, user_queryset)
-
-    def has_create_object_permission(self, user, request, view, serializer):
-        assert isinstance(serializer,
-                          (StudentAttendanceSerializer, TeacherAttendanceSerializer))
-        session: Session = serializer['session']
-        return (
-            self._can_check_in(user, session, timezone.now()) or
-            self._session_permission.has_update_object_permission(
-                user, request, view, session)
-        )
 
     def get_course_options(self, user: User, course_queryset=Course.objects.all()) -> QuerySet:
         if is_superuser(user):
@@ -49,15 +48,6 @@ class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
             return course_queryset
 
         return course_queryset.none()
-
-    def get_user_options(self, user: User, user_queryset=User.objects.all()) -> QuerySet:
-        if is_superuser(user):
-            return user_queryset
-
-        if in_group(user, 'staff'):
-            return user_queryset
-
-        return user_queryset.filter(pk=user.id)
 
     def _can_check_in(self, user: User, session: Session, request_time: datetime):
         return (

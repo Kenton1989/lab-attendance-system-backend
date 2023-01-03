@@ -31,5 +31,6 @@ class GroupViewSet(BaseModelViewSet):
 
     filter_backends = (filters.DjangoFilterBackend, SearchFilter,)
     search_fields = ('name',)
+    filterset_class = GroupFilterSet
 
     permission_classes = (GroupAccessPermission, )

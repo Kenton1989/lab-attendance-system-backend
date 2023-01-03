@@ -2,7 +2,7 @@ from .base import BaseModelViewSet
 from rest_api.serializers import StudentAttendanceSerializer, TeacherAttendanceSerializer
 from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group, Session, User
 from django_filters import rest_framework as filters
-from rest_api.permissions import BaseAttendanceAccessPermission
+from rest_api.permissions import StudentAttendanceAccessPermission, TeacherAttendanceAccessPermission
 
 
 class AttendanceFilterSet(filters.FilterSet):
@@ -22,25 +22,26 @@ class AttendanceFilterSet(filters.FilterSet):
         field_name='attender',
         queryset=Session.objects.all(),
     )
-    check_in_time = filters.IsoDateTimeFromToRangeFilter()
-    session_start_time = filters.IsoDateTimeFromToRangeFilter()
+    check_in_time = filters.IsoDateTimeFromToRangeFilter(
+        field_name='check_in_datetime')
+    session_start_time = filters.IsoDateTimeFromToRangeFilter(
+        field_name='session__start_datetime')
 
 
-class StudentAttendanceViewSet(BaseModelViewSet):
+class BaseAttendanceViewSet(BaseModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = AttendanceFilterSet
+
+
+class StudentAttendanceViewSet(BaseAttendanceViewSet):
     queryset = StudentAttendance.objects.all()
     serializer_class = StudentAttendanceSerializer
 
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AttendanceFilterSet
-
-    permission_classes = (BaseAttendanceAccessPermission,)
+    permission_classes = (StudentAttendanceAccessPermission,)
 
 
-class TeacherAttendanceViewSet(BaseModelViewSet):
+class TeacherAttendanceViewSet(BaseAttendanceViewSet):
     queryset = TeacherAttendance.objects.all()
     serializer_class = TeacherAttendanceSerializer
 
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = AttendanceFilterSet
-
-    permission_classes = (BaseAttendanceAccessPermission,)
+    permission_classes = (TeacherAttendanceAccessPermission,)

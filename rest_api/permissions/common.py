@@ -1,10 +1,10 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.serializers import Serializer
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
 from rest_api.models import User
 from django.db.models import QuerySet
-from typing import Any
+from typing import Any, List
 
 
 # common user checkers
@@ -24,6 +24,11 @@ def is_superuser(user):
 def in_group(user, group_name: str):
     return (is_authenticated(user) and
             user.groups.filter(name=group_name).exists())
+
+
+def in_one_of_groups(user, *group_names: str):
+    return (is_authenticated(user) and
+            user.groups.filter(name__in=group_names).exists())
 
 
 def with_uid(user, id: int):
@@ -84,11 +89,11 @@ class StaffManagedObjectPermission(ExtendedObjectPermission):
     Details:
     - superuser is allowed to perform any operations.
     - retrieve: allowed for all authenticated user.
-    - list: allowed for user in `staff` group.
-    - update/partial_update: require user in `staff` group and 
+    - list: allowed for user in `staff`/`lab` group.
+    - update/partial_update: require user in `staff`/`lab` group and 
       `self.has_update_object_permission(user, request, view, object)` is True. 
-      `has_update_object_permission` call `get_managers` to check if user is the manager of object.
-    - create: requires user in `staff` group and
+      `has_update_object_permission` by default call `get_managers` to check if user is the manager of object.
+    - create: requires user in `staff`/`lab` group and
       `self.has_create_object_permission(user, request, view, serializer)` is True. 
       It will return False by default.
     - destroy: not allowed for any user except superuser.
@@ -108,7 +113,7 @@ class StaffManagedObjectPermission(ExtendedObjectPermission):
             return True
 
         if action in {'list', 'create', 'update', 'partial_update'}:
-            return in_group(user, 'staff')
+            return in_one_of_groups(user, 'staff', 'lab')
 
         return False
 
@@ -139,5 +144,15 @@ class StaffManagedObjectPermission(ExtendedObjectPermission):
 
 class IsSuperuser(BasePermission):
     def has_permission(self, request, view):
-        user = request.user
-        return is_superuser(user)
+        return is_superuser(request.user)
+
+
+class IsSuperuserOrAuthenticatedReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if is_superuser(request.user):
+            return True
+
+        if is_authenticated(request.user) and request.method in SAFE_METHODS:
+            return True
+
+        return False

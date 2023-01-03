@@ -30,6 +30,3 @@ class CourseViewSet(BaseModelViewSet):
     filterset_class = CourseFilterSet
 
     permission_classes = (CourseAccessPermission, )
-
-    def get_queryset(self):
-        return super().get_queryset()

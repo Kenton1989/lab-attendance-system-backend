@@ -32,7 +32,7 @@
 - /users/{id}/managed_courses(/id)
 - /users/{id}/managed_groups?course=1&(/id)
 - /users/{id}/student_attendances
-- /users/{id}/student_attendances/visible_courses
+- /users/{id}/student_attendances/course_options
 
 
 - /labs
@@ -57,8 +57,8 @@
   - write only fields=coordinators_ids
 <!-- - /courses/{id}/coordinators -->
 <!-- - /courses/{id}/coordinators/{id} -->
-- /courses/{id}/groups
-- /courses/{id}/students
+<!-- - /courses/{id}/groups -->
+<!-- - /courses/{id}/students -->
 <!-- - /courses/{id}/teachers -->
 
 
@@ -74,12 +74,12 @@
     - teachers_contain
     - students_contain
 - /groups/{id}
+<!-- - /groups/{id}/students -->
 <!-- - /groups/{id}/supervisors -->
 <!-- - /groups/{id}/supervisors/{id} -->
 <!-- - /groups/{id}/teachers -->
 <!-- - /groups/{id}/teachers/{id} -->
-- /groups/{id}/students
-- /groups/{id}/sessions
+<!-- - /groups/{id}/sessions -->
 
 - /group_students
   - fields=id,user,user_id,group,group_id,seat
