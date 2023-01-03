@@ -20,15 +20,18 @@ class UserRoleViewSet(mixins.CreateModelMixin,
     permission_classes = (IsSuperuser, )
 
     def get_queryset(self):
-        return super().get_queryset().filter(user_set=self.queried_user)
+        return super().get_queryset().filter(user=self.queried_user)
 
     def perform_create(self, serializer: AuthGroupWithWritableIdSerializer):
         group_lookup = serializer.validated_data
         added_group = AuthGroup.objects.filter(**group_lookup)
         if not added_group.exists():
             raise ValidationError(
-                'group with specified name and id does not exist')
-        self.queried_user.groups.add(added_group)
+                'role with specified name and id does not exist')
+        if len(added_group) > 1:
+            raise ValidationError(
+                'more then 1 group match the result')
+        self.queried_user.groups.add(*added_group)
 
     def perform_destroy(self, instance: AuthGroup):
         self.queried_user.groups.remove(instance)

@@ -51,6 +51,7 @@ class UserRelatedObjectGenericViewSet(GenericViewSet):
 
 
 class UserManagedObjectViewSet(mixins.ListModelMixin,
+                               mixins.RetrieveModelMixin,
                                UserRelatedObjectGenericViewSet):
 
     management_permission_class: Type[StaffManagedObjectPermission]

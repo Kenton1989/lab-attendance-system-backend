@@ -1,4 +1,5 @@
 from .user import UserViewSet
+from .role import RoleViewSet
 from .week import WeekViewSet
 from .course import CourseViewSet
 from .lab import LabViewSet

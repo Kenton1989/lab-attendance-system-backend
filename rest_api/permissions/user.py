@@ -1,9 +1,9 @@
-from rest_api.models import User, parse_user_id
+from rest_api.models import User
 from .common import StaffManagedObjectPermission, is_superuser, is_authenticated
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 from rest_framework.viewsets import ViewSet
-from rest_framework.exceptions import bad_request
+from django.shortcuts import get_object_or_404
 
 
 class UserAccessPermission(StaffManagedObjectPermission):
@@ -32,13 +32,8 @@ class UserRelationshipAccessPermission(BasePermission):
             'please check URL config or change `.user_url_lookup_kwarg`.'
         )
 
-        user_id_str = view.kwargs[self.user_url_lookup_kwarg]
+        user_id = view.kwargs[self.user_url_lookup_kwarg]
 
-        user_id = parse_user_id(user_id_str, request)
-        if user_id is None:
-            return False
+        queried_user = get_object_or_404(User, pk=user_id)
 
-        if user_id == request.user:
-            return True
-
-        return False
+        return queried_user.id == request.user.id

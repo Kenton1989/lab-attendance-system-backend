@@ -43,6 +43,7 @@ class LabSerializer(BaseModelSerializer):
                   'room_count',
                   'executives',
                   'is_active']
+        default_exclude_fields = ['executives']
         validators = [
             IncreasingLabRoomCountValidator()
         ]

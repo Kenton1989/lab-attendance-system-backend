@@ -5,6 +5,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
 from .base import UserRelatedObjectGenericViewSet
 from .attendance import StudentAttendanceViewSet, TeacherAttendanceViewSet
+from rest_framework.decorators import action
 
 
 class UserAttendanceFilterSet(filters.FilterSet):
@@ -40,7 +41,15 @@ class UserStudentAttendanceViewSet(BaseUserAttendanceViewSet):
     queryset = StudentAttendance.objects.all()
     serializer_class = StudentAttendanceViewSet.serializer_class
 
+    @action(methods=['get'], detail=False)
+    def course_options(self):
+        return Course.objects.filter(groups__sessions__student_attendances__attender=self.queried_user).distinct()
+
 
 class UserTeacherAttendanceViewSet(BaseUserAttendanceViewSet):
     queryset = TeacherAttendance.objects.all()
     serializer_class = TeacherAttendanceViewSet.serializer_class
+
+    @action(methods=['get'], detail=False)
+    def course_options(self):
+        return Course.objects.filter(groups__sessions__teacher_attendances__attender=self.queried_user).distinct()

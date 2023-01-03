@@ -25,8 +25,9 @@ class AuthGroupWithWritableIdSerializer(BaseModelSerializer):
     name = CharField(read_only=False, write_only=False, required=False)
 
     def validate(self, attrs):
-        if not 'id' in attrs and not 'name' in attrs:
-            raise ValidationError('either "id" or "name" must be provided')
+        if len(attrs) == 0:
+            raise ValidationError('empty request is not allowed')
+        return super().validate(attrs)
 
     class Meta(AuthGroupSerializer.Meta):
         model = AuthGroup
