@@ -37,6 +37,10 @@ class StudentAttendanceFilter(BaseAttendanceFilter):
         field_name='session__teacher_attendances__attender',
         queryset=User.objects.all()
     )
+    group_teachers_contain = filters.ModelChoiceFilter(
+        field_name='session__group__teachers',
+        queryset=User.objects.all()
+    )
 
 
 class TeacherAttendanceFilter(BaseAttendanceFilter):

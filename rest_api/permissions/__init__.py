@@ -1,5 +1,5 @@
 from .common import ExtendedObjectPermission, StaffManagedObjectPermission, IsSuperuser, IsSuperuserOrAuthenticatedReadOnly
-from .user import UserAccessPermission, UserRelationshipAccessPermission
+from .user import UserAccessPermission, UserRelationshipReadOnlyAccessPermission
 from .lab import LabAccessPermission
 from .course import CourseAccessPermission
 from .group import GroupAccessPermission, GroupStudentAccessPermission

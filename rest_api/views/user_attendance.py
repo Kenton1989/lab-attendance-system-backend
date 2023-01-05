@@ -1,10 +1,10 @@
 from django_filters import rest_framework as filters
 from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group, Session
-from rest_api.permissions import UserRelationshipAccessPermission
-from rest_framework.viewsets import GenericViewSet
+from rest_api.permissions import UserRelationshipReadOnlyAccessPermission
 from rest_framework import mixins
 from .base import UserRelatedObjectGenericViewSet
-from .attendance import StudentAttendanceViewSet, TeacherAttendanceViewSet
+from .attendance import StudentAttendanceViewSet, TeacherAttendanceViewSet, BaseAttendanceViewSet
+from .course import CourseViewSet
 from rest_framework.decorators import action
 
 
@@ -27,29 +27,46 @@ class UserAttendanceFilterSet(filters.FilterSet):
         field_name='session__start_datetime')
 
 
-class BaseUserAttendanceViewSet(mixins.ListModelMixin, UserRelatedObjectGenericViewSet):
-    filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = UserAttendanceFilterSet
+class BaseUserAttendanceViewSet(mixins.ListModelMixin,
+                                mixins.RetrieveModelMixin,
+                                UserRelatedObjectGenericViewSet):
+    filter_backends = BaseAttendanceViewSet.filter_backends
+    filterset_class = BaseAttendanceViewSet.filterset_class
 
-    permission_classes = (UserRelationshipAccessPermission,)
+    permission_classes = (UserRelationshipReadOnlyAccessPermission,)
 
     def get_queryset(self):
         return super().get_queryset().filter(attender=self.queried_user)
 
+    # view set for /xxx-attendances/course_options/
+    class CourseOptionsViewSet(mixins.ListModelMixin,
+                               mixins.RetrieveModelMixin,
+                               UserRelatedObjectGenericViewSet):
+        queryset = CourseViewSet.queryset
+        serializer_class = CourseViewSet.serializer_class
+
+        filter_backends = CourseViewSet.filter_backends
+        search_fields = CourseViewSet.search_fields
+        filterset_class = CourseViewSet.filterset_class
+
+        permission_classes = (UserRelationshipReadOnlyAccessPermission,)
+
 
 class UserStudentAttendanceViewSet(BaseUserAttendanceViewSet):
-    queryset = StudentAttendance.objects.all()
+    queryset = StudentAttendanceViewSet.queryset
     serializer_class = StudentAttendanceViewSet.serializer_class
 
-    @action(methods=['get'], detail=False)
-    def course_options(self):
-        return Course.objects.filter(groups__sessions__student_attendances__attender=self.queried_user).distinct()
+    class CourseOptionsViewSet(BaseUserAttendanceViewSet.CourseOptionsViewSet):
+        def get_queryset(self):
+            return super().get_queryset().filter(
+                groups__sessions__student_attendances__attender=self.queried_user).distinct()
 
 
 class UserTeacherAttendanceViewSet(BaseUserAttendanceViewSet):
-    queryset = TeacherAttendance.objects.all()
+    queryset = TeacherAttendanceViewSet.queryset
     serializer_class = TeacherAttendanceViewSet.serializer_class
 
-    @action(methods=['get'], detail=False)
-    def course_options(self):
-        return Course.objects.filter(groups__sessions__teacher_attendances__attender=self.queried_user).distinct()
+    class CourseOptionsViewSet(BaseUserAttendanceViewSet.CourseOptionsViewSet):
+        def get_queryset(self):
+            return super().get_queryset().filter(
+                groups__sessions__teacher_attendances__attender=self.queried_user).distinct()

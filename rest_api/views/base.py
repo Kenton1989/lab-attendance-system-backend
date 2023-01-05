@@ -1,11 +1,9 @@
 from rest_api.models import User
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework import mixins, exceptions
-from rest_framework.request import Request
-from rest_api.permissions import ExtendedObjectPermission, StaffManagedObjectPermission, UserRelationshipAccessPermission
+from rest_framework import mixins
+from rest_api.permissions import ExtendedObjectPermission, StaffManagedObjectPermission, UserRelationshipReadOnlyAccessPermission
 from typing import Type
 from django.shortcuts import get_object_or_404
-from django.db.models import QuerySet
 
 
 class BaseModelViewSet(ModelViewSet):
@@ -56,7 +54,7 @@ class UserManagedObjectViewSet(mixins.ListModelMixin,
 
     management_permission_class: Type[StaffManagedObjectPermission]
 
-    permission_classes = (UserRelationshipAccessPermission, )
+    permission_classes = (UserRelationshipReadOnlyAccessPermission, )
 
     def get_queryset(self):
         management_permission = self.get_management_permission()

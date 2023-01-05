@@ -19,6 +19,10 @@ users_router.register(
 users_router.register(
     r'managed_labs', views.UserManagedLabViewSet, basename='user-managed-labs')
 users_router.register(
+    r'student_attendances/course_options', views.UserStudentAttendanceViewSet.CourseOptionsViewSet, basename='user-student-attendances-course-options')
+users_router.register(
+    r'teacher_attendances/course_options', views.UserTeacherAttendanceViewSet.CourseOptionsViewSet, basename='user-teacher-attendances-course-options')
+users_router.register(
     r'student_attendances', views.UserStudentAttendanceViewSet, basename='user-student-attendances')
 users_router.register(
     r'teacher_attendances', views.UserTeacherAttendanceViewSet, basename='user-teacher-attendances')
