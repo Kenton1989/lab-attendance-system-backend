@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,14 +20,32 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
+# environment variable
+# using package: django-environ, doc: https://django-environ.readthedocs.io/en/latest/
+# default value is suitable for debugging but not production
+env = environ.Env(
+    DEBUG=(bool, True),
+    SECRET_KEY=(
+        str,
+        'django-insecure-k3r&2%o=58&q3v&kabgwn&6z3_ftwo!b5rc$7*36ezyx7mfz!)'
+    ),
+    DATABASE_URL=(
+        str,
+        'sqlite:///db.sqlite3'
+    ),
+    GENERAL_LOG_LEVEL=(
+        str,
+        'INFO'
+    )
+)
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k3r&2%o=58&q3v&kabgwn&6z3_ftwo!b5rc$7*36ezyx7mfz!)'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -79,10 +98,7 @@ WSGI_APPLICATION = 'lab_attendance_system_backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db_url('DATABASE_URL'),
 }
 
 # Model used for authentication
@@ -131,6 +147,68 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Logging configurations
+# https://docs.djangoproject.com/en/4.1/howto/logging/#logging-how-to
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname}|{asctime}|{module}: {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+
+    'handlers': {
+        'console': {
+            'level': env('GENERAL_LOG_LEVEL'),
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'general_file': {
+            'level': env('GENERAL_LOG_LEVEL'),
+            'filters': ['require_debug_false'],
+            'formatter': 'verbose',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/general.log',
+            'maxBytes': 1024*1024*10,  # 10MB
+            'backupCount': 10,
+        },
+        'dbg_file': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'formatter': 'verbose',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+        },
+        # 'mail_admins': {
+        #     'level': 'ERROR',
+        #     'class': 'django.utils.log.AdminEmailHandler',
+        #     'filters': ['to be determined']
+        # },
+    },
+
+    'loggers': {
+        '': {
+            'handlers': ['dbg_file', 'general_file', 'console'],
+            'level': 'DEBUG',
+        },
+    },
+}
+
 # Django REST Framework config
 # https://www.django-rest-framework.org/api-guide/settings/
 REST_FRAMEWORK = {
@@ -145,14 +223,4 @@ REST_FRAMEWORK = {
 
     # pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-
-    # throttling configurations
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_api.throttling.BurstRateThrottle',
-        'rest_api.throttling.SustainedRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'burst': '60/min',
-        'sustained': '1000/day'
-    }
 }
