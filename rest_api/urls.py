@@ -37,7 +37,7 @@ rest_router.register(r'statistics/student_attendances',
 rest_router.register(r'statistics/teacher_attendances',
                      views.TeacherAttendanceCountsViewSet,
                      basename='statistics-teacher-attendance')
-rest_router.register(r'preferences/',
+rest_router.register(r'preferences',
                      GlobalPreferencesViewSet,
                      basename='global-preference')
 
