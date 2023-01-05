@@ -5,7 +5,7 @@ from rest_api.serializers import StudentAttendanceSerializer, TeacherAttendanceS
 from .common import StaffManagedObjectPermission
 from rest_api.permissions.common import is_superuser, in_group
 from datetime import datetime, timedelta
-from rest_api.preferences import preferences
+from rest_api.dynamic_preferences_registry import preferences
 from .session import SessionAccessPermission
 
 
