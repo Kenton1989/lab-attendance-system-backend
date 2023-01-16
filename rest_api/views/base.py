@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 class BaseModelViewSet(ModelViewSet):
     def perform_create(self, serializer):
-        self.check_create_object_permissions(self, self.request, serializer)
+        self.check_create_object_permissions(self.request, serializer)
         return super().perform_create(serializer)
 
     def check_create_object_permissions(self, request, serializer):

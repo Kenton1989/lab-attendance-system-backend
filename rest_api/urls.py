@@ -43,7 +43,8 @@ rest_router.register(r'statistics/teacher_attendances',
                      basename='statistics-teacher-attendance')
 rest_router.register(r'preferences',
                      GlobalPreferencesViewSet,
-                     basename='global-preference')
+                     basename='preference')
+
 
 urlpatterns = [
     # authentication API

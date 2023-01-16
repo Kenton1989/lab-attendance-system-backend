@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from rest_api.models import Lab
+from rest_api.models import Lab, User
 from .base import BaseModelSerializer
 from .user import UserSerializer
 
@@ -31,17 +31,21 @@ class LabSerializer(BaseModelSerializer):
         validators=(MinValueValidator(1),)
     )
 
-    username = serializers.CharField(source="user.username", read_only=True)
-    display_name = serializers.CharField(
-        source="user.display_name", read_only=True)
+    username = serializers.CharField(source="user.username")
+    display_name = serializers.CharField(source="user.display_name")
 
     executives = UserSerializer(many=True, read_only=True)
+    executive_ids = serializers.PrimaryKeyRelatedField(
+        many=True,
+        write_only=True,
+        queryset=User.objects.all(),  # TODO: limit to staff
+    )
 
     class Meta:
         model = Lab
         fields = ['id', 'username', 'display_name',
                   'room_count',
-                  'executives',
+                  'executives', 'executive_ids',
                   'is_active']
         default_exclude_fields = ['executives']
         validators = [

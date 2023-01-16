@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import environ
+import logging
+
+log = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,16 +39,28 @@ env = environ.Env(
     GENERAL_LOG_LEVEL=(
         str,
         'INFO'
-    )
+    ),
+    PRIMARY_HOSTNAME=(
+        str,
+        '127.0.0.1'
+    ),
 )
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+environ.Env.read_env(BASE_DIR / '.env')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    log.warning('Enabled DEBUG: True')
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('SECRET_KEY')
+
+
+ALLOWED_HOSTS = [
+    env('PRIMARY_HOSTNAME')
+]
 
 # Application definition
 

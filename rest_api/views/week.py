@@ -2,12 +2,14 @@ from .base import BaseModelViewSet
 from rest_framework.exceptions import ValidationError
 from rest_api.serializers import WeekSerializer
 from rest_api.models import Week
+from rest_api.permissions import IsSuperuserOrAuthenticatedReadOnly
 from datetime import datetime
 
 
 class WeekViewSet(BaseModelViewSet):
     queryset = Week.objects.all()
     serializer_class = WeekSerializer
+    permission_classes = (IsSuperuserOrAuthenticatedReadOnly,)
 
     def get_queryset(self):
         res = super().get_queryset()
