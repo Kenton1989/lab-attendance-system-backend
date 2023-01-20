@@ -22,6 +22,7 @@ class CourseFilterSet(filters.FilterSet):
 
 
 class CourseViewSet(BaseModelViewSet):
+
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 

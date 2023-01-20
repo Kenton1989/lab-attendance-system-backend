@@ -3,9 +3,12 @@ from rest_api import models, permissions
 from .course import CourseViewSet
 from .group import GroupViewSet
 from .lab import LabViewSet
+from .schemas import UserManagedCourseSchema, UserManagedGroupSchema, UserManagedLabSchema
 
 
 class UserManagedCourseViewSet(UserManagedObjectViewSet):
+    schema = UserManagedCourseSchema()
+
     serializer_class = CourseViewSet.serializer_class
 
     filter_backends = CourseViewSet.filter_backends
@@ -17,6 +20,8 @@ class UserManagedCourseViewSet(UserManagedObjectViewSet):
 
 
 class UserManagedGroupViewSet(UserManagedObjectViewSet):
+    schema = UserManagedGroupSchema()
+
     serializer_class = GroupViewSet.serializer_class
 
     filter_backends = GroupViewSet.filter_backends
@@ -28,6 +33,8 @@ class UserManagedGroupViewSet(UserManagedObjectViewSet):
 
 
 class UserManagedLabViewSet(UserManagedObjectViewSet):
+    schema = UserManagedLabSchema()
+
     serializer_class = LabViewSet.serializer_class
 
     filter_backends = LabViewSet.filter_backends

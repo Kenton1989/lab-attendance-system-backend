@@ -6,6 +6,7 @@ from .base import UserRelatedObjectGenericViewSet
 from .attendance import StudentAttendanceViewSet, TeacherAttendanceViewSet, BaseAttendanceViewSet
 from .course import CourseViewSet
 from rest_framework.decorators import action
+from .schemas import UserStudentAttendanceSchema, UserTeacherAttendanceSchema, UserTeacherAttendanceCourseOptionSchema, UserStudentAttendanceCourseOptionSchema
 
 
 class UserAttendanceFilterSet(filters.FilterSet):
@@ -53,20 +54,28 @@ class BaseUserAttendanceViewSet(mixins.ListModelMixin,
 
 
 class UserStudentAttendanceViewSet(BaseUserAttendanceViewSet):
+    schema = UserStudentAttendanceSchema()
+
     queryset = StudentAttendanceViewSet.queryset
     serializer_class = StudentAttendanceViewSet.serializer_class
 
     class CourseOptionsViewSet(BaseUserAttendanceViewSet.CourseOptionsViewSet):
+        schema = UserStudentAttendanceCourseOptionSchema()
+
         def get_queryset(self):
             return super().get_queryset().filter(
                 groups__sessions__student_attendances__attender=self.queried_user).distinct()
 
 
 class UserTeacherAttendanceViewSet(BaseUserAttendanceViewSet):
+    schema = UserTeacherAttendanceSchema()
+
     queryset = TeacherAttendanceViewSet.queryset
     serializer_class = TeacherAttendanceViewSet.serializer_class
 
     class CourseOptionsViewSet(BaseUserAttendanceViewSet.CourseOptionsViewSet):
+        schema = UserTeacherAttendanceCourseOptionSchema()
+
         def get_queryset(self):
             return super().get_queryset().filter(
                 groups__sessions__teacher_attendances__attender=self.queried_user).distinct()

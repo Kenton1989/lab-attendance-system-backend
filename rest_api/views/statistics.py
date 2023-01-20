@@ -4,6 +4,7 @@ from rest_framework.filters import OrderingFilter
 from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group, User
 from rest_api.statistics import attendance_stat
 from rest_api.serializers import StudentAttendanceCountsSerializer, TeacherAttendanceCountsSerializer
+from .schemas import StudentAttendanceStatisticsSchema, TeacherAttendanceStatisticsSchema
 
 
 class BaseAttendanceFilter(filters.FilterSet):
@@ -50,8 +51,8 @@ class TeacherAttendanceFilter(BaseAttendanceFilter):
     )
 
 
-class BaseAttendanceCountsViewSet(mixins.ListModelMixin,
-                                  viewsets.GenericViewSet):
+class BaseAttendanceStatViewSet(mixins.ListModelMixin,
+                                viewsets.GenericViewSet):
 
     filter_backends = [OrderingFilter]
     ordering_fields = attendance_stat.RESULT_FIELD_NAMES
@@ -81,7 +82,9 @@ class BaseAttendanceCountsViewSet(mixins.ListModelMixin,
         return res
 
 
-class StudentAttendanceCountsViewSet(BaseAttendanceCountsViewSet):
+class StudentAttendanceStatsViewSet(BaseAttendanceStatViewSet):
+    schema = StudentAttendanceStatisticsSchema()
+
     queryset = StudentAttendance.objects.all()
     serializer_class = StudentAttendanceCountsSerializer
 
@@ -98,7 +101,9 @@ class StudentAttendanceCountsViewSet(BaseAttendanceCountsViewSet):
         return attendance_stat.cal_student_attendance_stat(grouper=grouper, queryset=queryset)
 
 
-class TeacherAttendanceCountsViewSet(BaseAttendanceCountsViewSet):
+class TeacherAttendanceStatsViewSet(BaseAttendanceStatViewSet):
+    schema = TeacherAttendanceStatisticsSchema()
+
     queryset = TeacherAttendance.objects.all()
     serializer_class = TeacherAttendanceCountsSerializer
 

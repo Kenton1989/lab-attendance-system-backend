@@ -4,6 +4,7 @@ from rest_api.permissions import IsSuperuser
 from .base import UserRelatedObjectGenericViewSet
 from rest_framework import mixins
 from rest_framework.exceptions import ValidationError
+from .schemas import UserRoleSchema
 
 
 class UserRoleViewSet(mixins.CreateModelMixin,
@@ -11,6 +12,7 @@ class UserRoleViewSet(mixins.CreateModelMixin,
                       mixins.DestroyModelMixin,
                       mixins.ListModelMixin,
                       UserRelatedObjectGenericViewSet):
+    schema = UserRoleSchema()
 
     queryset = AuthGroup.objects.all()
     serializer_class = AuthGroupWithWritableIdSerializer
