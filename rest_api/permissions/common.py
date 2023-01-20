@@ -107,13 +107,11 @@ class StaffManagedObjectPermission(ExtendedObjectPermission):
         if is_superuser(user):
             return True
 
-        action = view.action
-
-        if action == 'retrieve':
-            return True
-
-        if action in {'list', 'create', 'update', 'partial_update'}:
+        if view.action in {'list', 'create', 'update', 'partial_update'}:
             return in_one_of_groups(user, 'staff', 'lab')
+
+        if request.method in SAFE_METHODS:
+            return True
 
         return False
 
