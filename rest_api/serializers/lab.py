@@ -31,8 +31,10 @@ class LabSerializer(BaseModelSerializer):
         validators=(MinValueValidator(1),)
     )
 
-    username = serializers.CharField(source="user.username")
-    display_name = serializers.CharField(source="user.display_name")
+    username = serializers.CharField(source="user.username",
+                                     read_only=True)
+    display_name = serializers.CharField(source="user.display_name",
+                                         read_only=True)
 
     executives = UserSerializer(many=True, read_only=True)
     executive_ids = serializers.PrimaryKeyRelatedField(

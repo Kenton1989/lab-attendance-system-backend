@@ -7,7 +7,7 @@ from dynamic_preferences.api.viewsets import GlobalPreferencesViewSet
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
 
-rest_router = SimpleRouter()
+rest_router = SimpleRouter(trailing_slash=False)
 rest_router.register(r'weeks', views.WeekViewSet)
 rest_router.register(r'roles', views.RoleViewSet)
 rest_router.register(r'users', views.UserViewSet)
@@ -47,9 +47,9 @@ rest_router.register(r'preferences', GlobalPreferencesViewSet,
 
 urlpatterns = [
     # authentication API
-    path('users/me/tokens/', token.CreateToken.as_view()),
-    path('users/me/tokens/current/', token.RevokeToken.as_view()),
-    path('users/me/tokens/all/', token.RevokeAllToken.as_view()),
+    path('users/me/tokens', token.CreateToken.as_view()),
+    path('users/me/tokens/current', token.RevokeToken.as_view()),
+    path('users/me/tokens/all', token.RevokeAllToken.as_view()),
 
     path('openapi', get_schema_view(
         title="Lab Attendance System",
@@ -57,12 +57,12 @@ urlpatterns = [
         version="1.0.0"
     ), name='openapi-schema'),
 
-    path('swagger-ui/', TemplateView.as_view(
+    path('swagger-ui', TemplateView.as_view(
         template_name='doc/swagger-ui.html',
         extra_context={'schema_url': 'openapi-schema'}
     ), name='swagger-ui'),
 
-    path('redoc/', TemplateView.as_view(
+    path('redoc', TemplateView.as_view(
         template_name='doc/redoc.html',
         extra_context={'schema_url': 'openapi-schema'}
     ), name='swagger-ui'),

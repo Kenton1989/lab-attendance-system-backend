@@ -62,6 +62,8 @@ ALLOWED_HOSTS = [
     env('PRIMARY_HOSTNAME')
 ]
 
+APPEND_SLASH = False
+
 # Application definition
 
 INSTALLED_APPS = [
