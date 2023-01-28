@@ -3,6 +3,7 @@ from rest_api.serializers import StudentAttendanceSerializer, TeacherAttendanceS
 from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group, Session, User
 from django_filters import rest_framework as filters
 from rest_api.permissions import StudentAttendanceAccessPermission, TeacherAttendanceAccessPermission
+from .filters import WeekFilter
 
 
 class AttendanceFilterSet(filters.FilterSet):
@@ -22,10 +23,14 @@ class AttendanceFilterSet(filters.FilterSet):
         field_name='attender',
         queryset=Session.objects.all(),
     )
-    check_in_time = filters.IsoDateTimeFromToRangeFilter(
-        field_name='check_in_datetime')
     session_start_time = filters.IsoDateTimeFromToRangeFilter(
         field_name='session__start_datetime')
+    session_week = WeekFilter(
+        field_name='session__start_datetime')
+    check_in_time = filters.IsoDateTimeFromToRangeFilter(
+        field_name='check_in_datetime')
+    check_in_week = WeekFilter(
+        field_name='check_in_datetime')
 
     is_active = filters.BooleanFilter(field_name='is_active')
 

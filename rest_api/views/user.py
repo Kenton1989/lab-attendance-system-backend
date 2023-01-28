@@ -4,9 +4,15 @@ from rest_api.serializers import UserSerializer
 from rest_api.models import User
 from rest_api.permissions import UserAccessPermission
 from django_filters import rest_framework as filters
+from django.contrib.auth.models import Group as AuthGroup
 
 
 class UserFilterSet(filters.FilterSet):
+    roles_contain = filters.ModelChoiceFilter(
+        field_name="groups",
+        queryset=AuthGroup.objects.all(),
+    )
+
     class Meta:
         model = User
         fields = ('is_active',)

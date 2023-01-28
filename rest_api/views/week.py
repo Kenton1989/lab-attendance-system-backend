@@ -1,3 +1,4 @@
+from rest_framework.filters import SearchFilter
 from .base import BaseModelViewSet
 from rest_framework.exceptions import ValidationError
 from rest_api.serializers import WeekSerializer
@@ -9,7 +10,9 @@ from datetime import datetime
 class WeekViewSet(BaseModelViewSet):
     queryset = Week.objects.all()
     serializer_class = WeekSerializer
-    permission_classes = (IsSuperuserOrAuthenticatedReadOnly,)
+    permission_classes = (IsSuperuserOrAuthenticatedReadOnly, )
+    filter_backends = (SearchFilter,)
+    search_fields = ('name',)
 
     def get_queryset(self):
         res = super().get_queryset()

@@ -1,7 +1,8 @@
-from .base import BaseModelViewSet
-from rest_api.serializers import SessionSerializer
-from rest_api.models import Session, Lab
 from django_filters import rest_framework as filters
+from rest_api.models import Session, Lab
+from rest_api.serializers import SessionSerializer
+from .base import BaseModelViewSet
+from .filters import WeekFilter
 
 
 class SessionFilterSet(filters.FilterSet):
@@ -11,6 +12,7 @@ class SessionFilterSet(filters.FilterSet):
     )
 
     start_datetime = filters.IsoDateTimeFromToRangeFilter()
+    week = WeekFilter(field_name='start_datetime')
 
     class Meta:
         model = Session
@@ -21,3 +23,4 @@ class SessionViewSet(BaseModelViewSet):
     queryset = Session.objects.all()
     serializer_class = SessionSerializer
     filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = SessionFilterSet
