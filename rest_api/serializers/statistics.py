@@ -6,7 +6,7 @@ from .mixins import DynamicFieldsMixin
 from rest_api.models import User, Course, Group
 
 
-class BaseAttendanceCountsSerializer(DynamicFieldsMixin, serializers.Serializer):
+class BaseAttendanceStatsSerializer(DynamicFieldsMixin, serializers.Serializer):
     course = serializers.IntegerField(required=False)
     group = serializers.IntegerField(required=False)
     teacher = serializers.IntegerField(required=False)
@@ -65,9 +65,9 @@ class BaseAttendanceCountsSerializer(DynamicFieldsMixin, serializers.Serializer)
         return UserSerializer(User.objects.get(pk=obj['teacher'])).data
 
 
-class StudentAttendanceCountsSerializer(BaseAttendanceCountsSerializer):
+class StudentAttendanceStatsSerializer(BaseAttendanceStatsSerializer):
     pass
 
 
-class TeacherAttendanceCountsSerializer(BaseAttendanceCountsSerializer):
+class TeacherAttendanceStatsSerializer(BaseAttendanceStatsSerializer):
     pass

@@ -27,6 +27,8 @@ class AttendanceFilterSet(filters.FilterSet):
     session_start_time = filters.IsoDateTimeFromToRangeFilter(
         field_name='session__start_datetime')
 
+    is_active = filters.BooleanFilter(field_name='is_active')
+
 
 class BaseAttendanceViewSet(BaseModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)

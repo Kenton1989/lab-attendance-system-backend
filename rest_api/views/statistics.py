@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from rest_framework.filters import OrderingFilter
 from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group, User
 from rest_api.statistics import attendance_stat
-from rest_api.serializers import StudentAttendanceCountsSerializer, TeacherAttendanceCountsSerializer
+from rest_api.serializers import StudentAttendanceStatsSerializer, TeacherAttendanceStatsSerializer
 from .schemas import StudentAttendanceStatisticsSchema, TeacherAttendanceStatisticsSchema
 
 
@@ -86,7 +86,7 @@ class StudentAttendanceStatsViewSet(BaseAttendanceStatViewSet):
     schema = StudentAttendanceStatisticsSchema()
 
     queryset = StudentAttendance.objects.all()
-    serializer_class = StudentAttendanceCountsSerializer
+    serializer_class = StudentAttendanceStatsSerializer
 
     pre_grouping_filter_class = StudentAttendanceFilter
     valid_grouping = {
@@ -105,7 +105,7 @@ class TeacherAttendanceStatsViewSet(BaseAttendanceStatViewSet):
     schema = TeacherAttendanceStatisticsSchema()
 
     queryset = TeacherAttendance.objects.all()
-    serializer_class = TeacherAttendanceCountsSerializer
+    serializer_class = TeacherAttendanceStatsSerializer
 
     pre_grouping_filter_class = TeacherAttendanceFilter
     valid_grouping = {

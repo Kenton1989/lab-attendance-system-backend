@@ -52,9 +52,11 @@ urlpatterns = [
     path('users/me/tokens/all', token.RevokeAllToken.as_view()),
 
     path('openapi', get_schema_view(
-        title="Lab Attendance System",
-        description="API for all things …",
-        version="1.0.0"
+        title="Lab Attendance System API",
+        description="API for all things",
+        version="1.0.0",
+        authentication_classes=[],
+        permission_classes=[],
     ), name='openapi-schema'),
 
     path('swagger-ui', TemplateView.as_view(
