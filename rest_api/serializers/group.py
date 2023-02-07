@@ -19,26 +19,26 @@ class MaxLabRoomNoValidator:
             get = serializer.make_latest_field_getter(attrs)
             lab: Lab = get('lab')
             room_no: int = get('room_no')
-            if room_no > lab.room_count:
+            if room_no is not None and room_no > lab.room_count:
                 raise ValidationError('room_no exceeds lab room count')
 
 
 class GroupSerializer(BaseModelSerializer):
     course = CourseSerializer(read_only=True)
     course_id = PrimaryKeyRelatedField(
-        source='course', write_only=True, queryset=Course.objects.all())
+        source='course',  queryset=Course.objects.all())
 
     lab = LabSerializer(
         read_only=True,
     )
     lab_id = PrimaryKeyRelatedField(
-        source='lab', write_only=True, queryset=Lab.objects.all())
+        source='lab',  queryset=Lab.objects.all())
 
     teachers = UserSerializer(read_only=True, many=True)
     teacher_ids = PrimaryKeyRelatedField(
         source='teachers',
         many=True,
-        write_only=True,
+
         queryset=User.objects.all()  # TODO: limit to TA
     )
 
@@ -46,7 +46,7 @@ class GroupSerializer(BaseModelSerializer):
     supervisor_ids = PrimaryKeyRelatedField(
         source='supervisors',
         many=True,
-        write_only=True,
+
         queryset=User.objects.all()  # TODO: limit to staff
     )
 
@@ -90,11 +90,11 @@ class UniqueCourseStudentValidator:
 class GroupStudentSerializer(BaseModelSerializer):
     student = UserSerializer(read_only=True)
     student_id = PrimaryKeyRelatedField(
-        source='student', write_only=True, queryset=User.objects.all())
+        source='student',  queryset=User.objects.all())
 
     group = GroupSerializer(read_only=True)
     group_id = PrimaryKeyRelatedField(
-        source='group', write_only=True, queryset=Group.objects.all())
+        source='group',  queryset=Group.objects.all())
 
     class Meta:
         model = GroupStudent

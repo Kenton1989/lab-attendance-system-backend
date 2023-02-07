@@ -8,7 +8,6 @@ class CourseSerializer(BaseModelSerializer):
     coordinators = UserSerializer(read_only=True, many=True)
     coordinator_ids = PrimaryKeyRelatedField(
         source='coordinators',
-        write_only=True,
         many=True,
         queryset=User.objects.all()  # TODO: limit to staff
     )

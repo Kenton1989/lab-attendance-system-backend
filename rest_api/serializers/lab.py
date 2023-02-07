@@ -39,7 +39,7 @@ class LabSerializer(BaseModelSerializer):
     executives = UserSerializer(many=True, read_only=True)
     executive_ids = serializers.PrimaryKeyRelatedField(
         many=True,
-        write_only=True,
+        source='executives',
         queryset=User.objects.all(),  # TODO: limit to staff
     )
 

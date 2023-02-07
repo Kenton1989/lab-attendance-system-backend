@@ -39,11 +39,11 @@ class UserInRelationshipOfSessionValidator:
 class BaseAttendanceSerializer(BaseModelSerializer):
     attender = UserSerializer(read_only=True)
     attender_id = PrimaryKeyRelatedField(
-        source='attender', write_only=True, queryset=User.objects.all())
+        source='attender',  queryset=User.objects.all())
 
     session = SessionSerializer(read_only=True)
     session_id = PrimaryKeyRelatedField(
-        source='session', write_only=True, queryset=Session.objects.all())
+        source='session',  queryset=Session.objects.all())
 
     last_modify = DateTimeField(
         default=timezone.now,

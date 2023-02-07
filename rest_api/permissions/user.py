@@ -37,6 +37,9 @@ class UserRelationshipReadOnlyAccessPermission(BasePermission):
 
         user_id = view.kwargs[self.user_url_lookup_kwarg]
 
+        if user_id == 'me':
+            return True
+
         queried_user = get_object_or_404(User, pk=user_id)
 
         return queried_user.id == request.user.id

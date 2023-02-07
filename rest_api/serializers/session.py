@@ -58,7 +58,7 @@ class TimeOverlappingWithinGroupValidator:
 class SessionSerializer(BaseModelSerializer):
     group = GroupSerializer(read_only=True)
     group_id = PrimaryKeyRelatedField(
-        source='group', write_only=True, queryset=Group.objects.all())
+        source='group',  queryset=Group.objects.all())
 
     check_in_deadline_mins = IntegerField(validators=[MinValueValidator(0)])
 
@@ -132,15 +132,15 @@ class UserInOriginalGroupValidator:
 class StudentMakeUpSessionSerializer(BaseModelSerializer):
     user = UserSerializer(read_only=True)
     user_id = PrimaryKeyRelatedField(
-        source='user', write_only=True, queryset=User.objects.all())
+        source='user',  queryset=User.objects.all())
 
     original_session = SessionSerializer(read_only=True)
     original_session_id = PrimaryKeyRelatedField(
-        source='original_session', write_only=True, queryset=Session.objects.all())
+        source='original_session',  queryset=Session.objects.all())
 
     make_up_session = SessionSerializer(read_only=True)
     make_up_session_id = PrimaryKeyRelatedField(
-        source='make_up_session', write_only=True, queryset=Session.objects.all())
+        source='make_up_session',  queryset=Session.objects.all())
 
     class Meta:
         model = StudentMakeUpSession

@@ -21,12 +21,13 @@ class AttendanceFilterSet(filters.FilterSet):
     )
     attender = filters.ModelChoiceFilter(
         field_name='attender',
-        queryset=Session.objects.all(),
+        queryset=User.objects.all(),
     )
     session_start_time = filters.IsoDateTimeFromToRangeFilter(
         field_name='session__start_datetime')
     session_week = WeekFilter(
         field_name='session__start_datetime')
+    check_in_state = filters.CharFilter(field_name='check_in_state')
     check_in_time = filters.IsoDateTimeFromToRangeFilter(
         field_name='check_in_datetime')
     check_in_week = WeekFilter(
