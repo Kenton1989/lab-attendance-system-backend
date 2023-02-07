@@ -37,7 +37,7 @@ class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
         return object_queryset.filter(session__in=sessions)
 
     def get_managers(self,
-                     obj: StudentAttendance | TeacherAttendance,
+                     obj,  # StudentAttendance | TeacherAttendance
                      user_queryset: QuerySet = User.objects.all()) -> QuerySet:
         session = obj.session
         return self._session_permission.get_managers(session, user_queryset)

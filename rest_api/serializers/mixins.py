@@ -20,7 +20,11 @@ class DynamicFieldsMixin():
     >>>         # If the request contains "fields" query parameter, default_include_fields and default_exclude_fields will be ignored.
     """
 
-    def __init__(self, *args, fields: List[str] | Literal['__all__'] | None = None, **kwargs):
+    def __init__(self,
+                 *args,
+                 fields: List[str] = None,  # or literal '__all__'
+                 **kwargs):
+
         # Instantiate the superclass normally
         super().__init__(*args, **kwargs)
 
