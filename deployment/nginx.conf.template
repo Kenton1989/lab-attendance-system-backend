@@ -4,7 +4,7 @@
 # please run envsubst before use it as nginx.conf
 # required env before running envsubst
 # - STATIC_FILE_PATH
-# - BACKEND_URL 
+# - BACKEND_SERVER 
 
 worker_processes 1;
 
@@ -30,15 +30,15 @@ http {
   access_log /var/log/nginx/access.log combined;
   sendfile on;
 
-  upstream app_server {
+  upstream api_server {
     # fail_timeout=0 means we always retry an upstream even if it failed
     # to return a good HTTP response
 
     # for UNIX domain socket setups
-    server unix:/tmp/gunicorn.sock fail_timeout=0;
+    # server unix:/tmp/gunicorn.sock fail_timeout=0;
 
     # for a TCP configuration
-    # server 192.168.0.7:8000 fail_timeout=0;
+    server ${BACKEND_SERVER} fail_timeout=0;
   }
 
   server {
@@ -70,7 +70,7 @@ http {
 
     # proxy all request with URL path "/api/..."
     location /api {
-      proxy_pass ${BACKEND_URL};
+      proxy_pass http://api_server;
     }
 
   }
