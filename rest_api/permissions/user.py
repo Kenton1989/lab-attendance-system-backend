@@ -44,7 +44,7 @@ class UserAccessPermission(StaffManagedObjectPermission):
         instance: User = serializer.instance
 
         if (instance is not None and
-            isinstance(instance, Model) and
+            isinstance(instance, User) and
             instance.id == request.user.id and
                 cls.USER_SELF_WRITABLE_FIELDS is not None):
             # user can update a limited set of fields of his own user object
