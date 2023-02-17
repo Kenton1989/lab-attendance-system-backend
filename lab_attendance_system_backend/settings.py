@@ -241,3 +241,8 @@ REST_FRAMEWORK = {
     # pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
 }
+
+# Customized Config
+
+# the special user id used to refer currently authenticated user
+USER_SELF_ID = 'me'

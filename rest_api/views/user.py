@@ -5,6 +5,7 @@ from rest_api.models import User
 from rest_api.permissions import UserAccessPermission
 from django_filters import rest_framework as filters
 from django.contrib.auth.models import Group as AuthGroup
+from django.conf import settings
 
 
 class UserFilterSet(filters.FilterSet):
@@ -30,6 +31,11 @@ class UserViewSet(BaseModelViewSet):
 
     def get_object(self):
         pk = self.kwargs.get('pk', None)
-        if pk == 'me':
+        if pk == settings.USER_SELF_ID:
             self.kwargs['pk'] = self.request.user.id
         return super().get_object()
+
+    def get_serializer(self, *args, **kwargs):
+        res = super().get_serializer(*args, **kwargs)
+        res = UserAccessPermission.scope_fields(self.request, res)
+        return res

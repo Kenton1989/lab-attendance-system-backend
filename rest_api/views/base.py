@@ -4,6 +4,7 @@ from rest_framework import mixins
 from rest_api.permissions import ExtendedObjectPermission, StaffManagedObjectPermission, UserRelationshipReadOnlyAccessPermission
 from typing import Type
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 
 class BaseModelViewSet(ModelViewSet):
@@ -20,6 +21,9 @@ class BaseModelViewSet(ModelViewSet):
                 self.permission_denied(request,
                                        message=getattr(perm, 'message', None),
                                        code=getattr(perm, 'code', None))
+
+    def get_serializer(self, *args, **kwargs):
+        return super().get_serializer(*args, **kwargs)
 
 
 class UserRelatedObjectGenericViewSet(GenericViewSet):
@@ -42,7 +46,7 @@ class UserRelatedObjectGenericViewSet(GenericViewSet):
         return self.kwargs[self.user_url_lookup_kwarg]
 
     def get_user_by_id(self, user_id) -> User:
-        if user_id == 'me':
+        if user_id == settings.USER_SELF_ID:
             return self.request.user
 
         return get_object_or_404(User, pk=user_id)

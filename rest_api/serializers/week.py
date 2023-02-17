@@ -38,10 +38,11 @@ class WeekSerializer(BaseModelSerializer):
         self._add_next_monday(validated_data)
         return super().create(validated_data)
 
-    def update(self, validated_data):
+    def update(self, instance, validated_data):
         self._add_next_monday(validated_data)
-        return super().update(validated_data)
+        return super().update(instance, validated_data)
 
     def _add_next_monday(self, validated_data):
-        monday: date = validated_data['monday']
-        validated_data['next_monday'] = monday + _ONE_WEEK
+        monday: date = validated_data.get('monday', None)
+        if monday is not None:
+            validated_data['next_monday'] = monday + _ONE_WEEK

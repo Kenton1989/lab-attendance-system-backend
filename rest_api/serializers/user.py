@@ -3,6 +3,7 @@ from rest_api.models import User
 from django.contrib.auth.password_validation import validate_password
 from .base import BaseModelSerializer
 from .auth_group import AuthGroupSerializer
+from django.contrib.auth.models import Group as AuthGroup
 
 from django.core.exceptions import ValidationError
 import re
@@ -30,11 +31,16 @@ class UserSerializer(BaseModelSerializer):
     email = serializers.EmailField()
 
     roles = AuthGroupSerializer(source='groups', many=True, read_only=True)
+    role_ids = serializers.PrimaryKeyRelatedField(
+        source='groups',
+        many=True,
+        queryset=AuthGroup.objects.all()  # TODO: limit to staff
+    )
 
     class Meta:
         model = User
         fields = ['id', 'username', 'password',
-                  'email', 'display_name', 'roles',
+                  'email', 'display_name', 'roles', 'role_ids',
                   'is_active']
         default_exclude_fields = ['roles']
 

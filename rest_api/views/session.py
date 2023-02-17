@@ -1,11 +1,16 @@
 from django_filters import rest_framework as filters
-from rest_api.models import Session, Lab
+from rest_api.models import Session, Lab, Course
 from rest_api.serializers import SessionSerializer
 from .base import BaseModelViewSet
 from .filters import WeekFilter
 
 
 class SessionFilterSet(filters.FilterSet):
+    course = filters.ModelChoiceFilter(
+        field_name='group__course',
+        queryset=Course.objects.all(),
+    )
+
     lab = filters.ModelChoiceFilter(
         field_name='group__lab',
         queryset=Lab.objects.all(),
