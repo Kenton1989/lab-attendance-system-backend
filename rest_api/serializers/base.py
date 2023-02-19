@@ -9,7 +9,7 @@ class BaseModelSerializer(DynamicFieldsMixin, ModelSerializer):
             if deserialized_key is None:
                 deserialized_key = serialized_key
 
-            if serialized_key in self.initial_data:
+            if serialized_key in self.initial_data and deserialized_key in attrs:
                 return attrs[deserialized_key]
 
             if self.instance and hasattr(self.instance, deserialized_key):
