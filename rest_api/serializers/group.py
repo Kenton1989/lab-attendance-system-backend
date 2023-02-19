@@ -15,7 +15,7 @@ class MaxLabRoomNoValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'lab' in attrs or 'room_no' in attrs:
+        if 'lab' in serializer.initial_data or 'room_no' in serializer.initial_data:
             get = serializer.make_latest_field_getter(attrs)
             lab: Lab = get('lab')
             room_no: int = get('room_no')
@@ -74,15 +74,21 @@ class UniqueCourseStudentValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'group' in attrs or 'student' in attrs:
+        if serializer.instance is not None and (
+            'group' in serializer.initial_data or
+                'student' in serializer.initial_data):
             get = serializer.make_latest_field_getter(attrs)
             group = get('group')
             student = get('student')
             course = group.course
-            if GroupStudent.objects.filter(
+            conflict = GroupStudent.objects.filter(
                 group__course=course,
                 student=student
-            ).exclude(group=group).exists():
+            ).exclude(pk=serializer.instance.id)
+
+            print(conflict)
+
+            if conflict.exists():
                 raise ValidationError(
                     'the student is already in another group of the same course')
 

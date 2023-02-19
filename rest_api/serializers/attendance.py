@@ -23,7 +23,7 @@ class UserInRelationshipOfSessionValidator:
         self.relationship = relationship
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'session' in attrs or 'attender' in attrs:
+        if 'session' in serializer.initial_data or 'attender' in serializer.initial_data:
             get = serializer.make_latest_field_getter(attrs)
 
             session = get('session')

@@ -13,7 +13,7 @@ class IncreasingLabRoomCountValidator:
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
 
-        if serializer.instance and 'room_count' in attrs:
+        if serializer.instance and 'room_count' in serializer.initial_data:
             room_count = attrs.get('room_count')
             if serializer.instance.room_count > room_count:
                 raise ValidationError(

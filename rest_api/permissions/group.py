@@ -47,6 +47,14 @@ class GroupStudentAccessPermission(StaffManagedObjectPermission):
         return self._group_permission.has_update_object_permission(
             user, request, view, group)
 
+    def has_destroy_object_permission(self, user, request, view, obj: GroupStudent):
+        group = obj.group
+
+        return (
+            super().has_destroy_object_permission(user, request, view, obj) or
+            self._group_permission.has_update_object_permission(
+                user, request, view, group))
+
     def get_managed_data(self, user: User, object_queryset=GroupStudent.objects.all()):
         groups = self._group_permission.get_managers(user)
         return object_queryset.filter(group_in=groups)
