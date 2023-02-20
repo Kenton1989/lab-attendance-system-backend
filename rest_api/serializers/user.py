@@ -34,6 +34,7 @@ class UserSerializer(BaseModelSerializer):
     role_ids = serializers.PrimaryKeyRelatedField(
         source='groups',
         many=True,
+        required=False,
         queryset=AuthGroup.objects.all()  # TODO: limit to staff
     )
 

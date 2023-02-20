@@ -9,9 +9,7 @@ class Lab(models.Model):
         on_delete=models.CASCADE,
         primary_key=True
     )
-    room_count = models.IntegerField(
-        null=True,
-    )
+    room_count = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
     executives = models.ManyToManyField(

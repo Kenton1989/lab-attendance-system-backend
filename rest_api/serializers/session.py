@@ -16,7 +16,7 @@ class StartEndTimeValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'start_datetime' in serializer.initial_data or 'end_datetime' in serializer.initial_data:
+        if 'start_datetime' in attrs or 'end_datetime' in attrs:
             get = serializer.make_latest_field_getter(attrs)
 
             start_datetime = get('start_datetime')
@@ -31,12 +31,12 @@ class TimeOverlappingWithinGroupValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if ('start_datetime' in serializer.initial_data or
-            'end_datetime' in serializer.initial_data or
-                'group' in serializer.initial_data):
+        if ('start_datetime' in attrs or
+            'end_datetime' in attrs or
+                'group' in attrs):
             get = serializer.make_latest_field_getter(attrs)
 
-            group = get('group_id', 'group')
+            group = get('group')
             start_datetime = get('start_datetime')
             end_datetime = get('end_datetime')
 
@@ -93,7 +93,7 @@ class OriginalMakeUpSessionValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'original_session' in serializer.initial_data or 'make_up_session' in serializer.initial_data:
+        if 'original_session' in attrs or 'make_up_session' in attrs:
             get = serializer.make_latest_field_getter(attrs)
 
             original_session = get('original_session')
@@ -116,7 +116,7 @@ class UserInOriginalGroupValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'original_session' in serializer.initial_data or 'user' in serializer.initial_data:
+        if 'original_session' in attrs or 'user' in attrs:
             get = serializer.make_latest_field_getter(attrs)
 
             original_session = get('original_session')

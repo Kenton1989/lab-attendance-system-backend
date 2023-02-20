@@ -22,9 +22,9 @@ def populate_groups(**kwargs):
     Group.objects.get_or_create(name='teacher')
     Group.objects.get_or_create(name='student')
 
-    if settings.DEBUG and not User.objects.filter(username='admin').exists():
+    if settings.DEBUG and not User.objects.filter(username='ADMIN').exists():
         admin = User.objects.create_superuser(
-            username='admin',
+            username='ADMIN',
             email='admin@example.com',
             password='12345678',
         )

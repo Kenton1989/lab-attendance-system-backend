@@ -15,7 +15,7 @@ class MaxLabRoomNoValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'lab' in serializer.initial_data or 'room_no' in serializer.initial_data:
+        if 'lab' in attrs or 'room_no' in attrs:
             get = serializer.make_latest_field_getter(attrs)
             lab: Lab = get('lab')
             room_no: int = get('room_no')
@@ -38,7 +38,7 @@ class GroupSerializer(BaseModelSerializer):
     teacher_ids = PrimaryKeyRelatedField(
         source='teachers',
         many=True,
-
+        required=False,
         queryset=User.objects.all()  # TODO: limit to TA
     )
 
@@ -46,11 +46,11 @@ class GroupSerializer(BaseModelSerializer):
     supervisor_ids = PrimaryKeyRelatedField(
         source='supervisors',
         many=True,
-
+        required=False,
         queryset=User.objects.all()  # TODO: limit to staff
     )
 
-    room_no = IntegerField(validators=[MinValueValidator(1)])
+    room_no = IntegerField(validators=[MinValueValidator(1)], allow_null=True)
 
     class Meta:
         model = Group
@@ -74,9 +74,7 @@ class UniqueCourseStudentValidator:
     requires_context = True
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if serializer.instance is not None and (
-            'group' in serializer.initial_data or
-                'student' in serializer.initial_data):
+        if ('group' in attrs or 'student' in attrs):
             get = serializer.make_latest_field_getter(attrs)
             group = get('group')
             student = get('student')
@@ -84,7 +82,10 @@ class UniqueCourseStudentValidator:
             conflict = GroupStudent.objects.filter(
                 group__course=course,
                 student=student
-            ).exclude(pk=serializer.instance.id)
+            )
+
+            if serializer.instance is not None:
+                conflict = conflict.exclude(pk=serializer.instance.id)
 
             print(conflict)
 

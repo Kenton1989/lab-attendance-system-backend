@@ -14,6 +14,8 @@ class UserFilterSet(filters.FilterSet):
         queryset=AuthGroup.objects.all(),
     )
 
+    role_names_contain = filters.CharFilter(field_name='groups__name')
+
     class Meta:
         model = User
         fields = ('is_active',)

@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator
 
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.validators import UniqueValidator
 
 from rest_api.models import Lab, User
 from .base import BaseModelSerializer
@@ -13,18 +14,30 @@ class IncreasingLabRoomCountValidator:
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
 
-        if serializer.instance and 'room_count' in serializer.initial_data:
+        if serializer.instance and 'room_count' in attrs:
             room_count = attrs.get('room_count')
-            if serializer.instance.room_count > room_count:
+
+            old_room_count = serializer.instance.room_count
+
+            if old_room_count < room_count:
                 raise ValidationError(
                     'room_count cannot be smaller than existing value')
 
 
 class LabSerializer(BaseModelSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # when creation is performed, which means instance is None,
+        # id is editable. Otherwise, id is not editable.
+        if self.instance is not None:
+            self.fields.get('id').read_only = True
+
     id = serializers.PrimaryKeyRelatedField(
         source='user',
         many=False,
-        read_only=True
+        queryset=User.objects.all(),
+        validators=[UniqueValidator(queryset=Lab.objects.all())]
     )
 
     room_count = serializers.IntegerField(
@@ -40,6 +53,7 @@ class LabSerializer(BaseModelSerializer):
     executive_ids = serializers.PrimaryKeyRelatedField(
         many=True,
         source='executives',
+        required=False,
         queryset=User.objects.all(),  # TODO: limit to staff
     )
 

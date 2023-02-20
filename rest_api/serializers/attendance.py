@@ -23,7 +23,7 @@ class UserInRelationshipOfSessionValidator:
         self.relationship = relationship
 
     def __call__(self, attrs, serializer: BaseModelSerializer):
-        if 'session' in serializer.initial_data or 'attender' in serializer.initial_data:
+        if 'session' in attrs or 'attender' in attrs:
             get = serializer.make_latest_field_getter(attrs)
 
             session = get('session')
@@ -33,7 +33,7 @@ class UserInRelationshipOfSessionValidator:
                     pk=session.id,
                     **{self.relationship: attender}).exists():
                 raise ValidationError(
-                    'attender must be a student of the group of session')
+                    f'attender must be a {self.relationship} of the group of session')
 
 
 class BaseAttendanceSerializer(BaseModelSerializer):
