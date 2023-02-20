@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import environ
 import logging
+from datetime import timedelta
 
 log = logging.getLogger(__name__)
 
@@ -240,6 +241,12 @@ REST_FRAMEWORK = {
 
     # pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+}
+
+REST_KNOX = {
+    'TOKEN_TTL': timedelta(days=3),
+    'AUTO_REFRESH': True,
+    'MIN_REFRESH_INTERVAL': timedelta(days=1),
 }
 
 # Customized Config
