@@ -17,13 +17,13 @@ def is_anonymous(user):
     return user and not user.is_authenticated
 
 
-def is_superuser(user):
-    return is_authenticated(user) and user.is_superuser
-
-
 def in_group(user, group_name: str):
     return (is_authenticated(user) and
             user.groups.filter(name=group_name).exists())
+
+
+def is_superuser(user):
+    return is_authenticated(user) and (user.is_superuser or in_group(user, 'admin'))
 
 
 def in_one_of_groups(user, *group_names: str):
