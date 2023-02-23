@@ -13,7 +13,7 @@ class GroupAccessPermission(StaffManagedObjectPermission):
     def has_create_object_permission(self, user, request, view, serializer):
         assert isinstance(serializer, GroupSerializer)
 
-        course = serializer.data['course']
+        course = serializer.validated_data['course']
 
         return self._course_permission.has_update_object_permission(
             user, request, view, course)
@@ -42,7 +42,7 @@ class GroupStudentAccessPermission(StaffManagedObjectPermission):
     def has_create_object_permission(self, user, request, view, serializer):
         assert isinstance(serializer, GroupStudentSerializer)
 
-        group = serializer.data['group']
+        group = serializer.validated_data['group']
 
         return self._group_permission.has_update_object_permission(
             user, request, view, group)

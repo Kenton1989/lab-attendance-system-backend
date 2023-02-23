@@ -246,7 +246,7 @@ REST_FRAMEWORK = {
 REST_KNOX = {
     'TOKEN_TTL': timedelta(days=3),
     'AUTO_REFRESH': True,
-    'MIN_REFRESH_INTERVAL': timedelta(days=1),
+    'MIN_REFRESH_INTERVAL': timedelta(days=1).total_seconds(),
 }
 
 # Customized Config

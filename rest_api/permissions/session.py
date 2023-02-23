@@ -11,7 +11,7 @@ class SessionAccessPermission(StaffManagedObjectPermission):
     def has_create_object_permission(self, user, request, view, serializer):
         assert isinstance(serializer, SessionSerializer)
 
-        group = serializer.data['group']
+        group = serializer.validated_data['group']
 
         return self._group_permission.has_update_object_permission(
             user, request, view, group)

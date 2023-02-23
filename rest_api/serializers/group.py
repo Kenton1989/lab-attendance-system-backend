@@ -18,7 +18,7 @@ class MaxLabRoomNoValidator:
         if 'lab' in attrs or 'room_no' in attrs:
             get = serializer.make_latest_field_getter(attrs)
             lab: Lab = get('lab')
-            room_no: int = get('room_no')
+            room_no: int = get('room_no', None, True)
             if room_no is not None and room_no > lab.room_count:
                 raise ValidationError('room_no exceeds lab room count')
 
@@ -50,7 +50,7 @@ class GroupSerializer(BaseModelSerializer):
         queryset=User.objects.all()  # TODO: limit to staff
     )
 
-    room_no = IntegerField(validators=[MinValueValidator(1)], allow_null=True)
+    room_no = IntegerField(validators=[MinValueValidator(1)], required=False)
 
     class Meta:
         model = Group
