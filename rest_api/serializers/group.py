@@ -1,4 +1,4 @@
-from rest_framework.serializers import PrimaryKeyRelatedField, IntegerField
+from rest_framework.serializers import PrimaryKeyRelatedField, IntegerField, CharField
 from rest_framework.validators import UniqueTogetherValidator
 from rest_framework.exceptions import ValidationError
 from django.core.validators import MinValueValidator
@@ -50,7 +50,8 @@ class GroupSerializer(BaseModelSerializer):
         queryset=User.objects.all()  # TODO: limit to staff
     )
 
-    room_no = IntegerField(validators=[MinValueValidator(1)], required=False)
+    room_no = IntegerField(
+        validators=[MinValueValidator(1)], allow_null=True, required=False)
 
     class Meta:
         model = Group
@@ -87,7 +88,7 @@ class UniqueCourseStudentValidator:
             if serializer.instance is not None:
                 conflict = conflict.exclude(pk=serializer.instance.id)
 
-            print(conflict)
+            # print(conflict)
 
             if conflict.exists():
                 raise ValidationError(
@@ -102,6 +103,8 @@ class GroupStudentSerializer(BaseModelSerializer):
     group = GroupSerializer(read_only=True)
     group_id = PrimaryKeyRelatedField(
         source='group',  queryset=Group.objects.all())
+
+    seat = CharField(default=None)
 
     class Meta:
         model = GroupStudent

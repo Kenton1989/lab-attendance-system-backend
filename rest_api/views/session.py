@@ -16,7 +16,12 @@ class SessionFilterSet(filters.FilterSet):
         queryset=Lab.objects.all(),
     )
 
-    start_datetime = filters.IsoDateTimeFromToRangeFilter()
+    start_datetime = filters.IsoDateTimeFromToRangeFilter(
+        field_name='start_datetime'
+    )
+    end_datetime = filters.IsoDateTimeFromToRangeFilter(
+        field_name='end_datetime'
+    )
     week = WeekFilter(field_name='start_datetime')
 
     class Meta:
