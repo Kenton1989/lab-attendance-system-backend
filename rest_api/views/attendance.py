@@ -4,6 +4,7 @@ from rest_api.models import StudentAttendance, TeacherAttendance, Course, Group,
 from django_filters import rest_framework as filters
 from rest_api.permissions import StudentAttendanceAccessPermission, TeacherAttendanceAccessPermission
 from .filters import WeekFilter
+from datetime import datetime
 
 
 class AttendanceFilterSet(filters.FilterSet):
@@ -33,12 +34,49 @@ class AttendanceFilterSet(filters.FilterSet):
     check_in_week = WeekFilter(
         field_name='check_in_datetime')
 
+    last_modify = filters.IsoDateTimeFromToRangeFilter(
+        field_name='last_modify')
+
     is_active = filters.BooleanFilter(field_name='is_active')
 
 
 class BaseAttendanceViewSet(BaseModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = AttendanceFilterSet
+
+    def get_serializer(self, *args, **kwargs):
+        data = kwargs.get("data", None)
+
+        if data is not None:
+            last_modify_in = data.get("last_modify")
+            new_last_modify_in = self._cap_last_modify_to_now(last_modify_in)
+
+            if new_last_modify_in is not None:
+                data["last_modify"] = new_last_modify_in
+
+        return super().get_serializer(*args, **kwargs)
+
+    def _cap_last_modify_to_now(last_modify_in: str | datetime) -> str | datetime:
+        if last_modify_in is None:
+            return None
+
+        input_is_datetime = isinstance(last_modify_in, datetime)
+
+        if (input_is_datetime):
+            last_modify = last_modify_in
+        else:
+            try:
+                last_modify = datetime.fromisoformat(last_modify_in)
+            except:
+                return None
+
+        now = datetime.utcnow()
+        res = min(now, last_modify)
+
+        if input_is_datetime:
+            return res
+        else:
+            return res.isoformat()
 
 
 class StudentAttendanceViewSet(BaseAttendanceViewSet):
