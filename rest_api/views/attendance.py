@@ -5,6 +5,7 @@ from django_filters import rest_framework as filters
 from rest_api.permissions import StudentAttendanceAccessPermission, TeacherAttendanceAccessPermission
 from .filters import WeekFilter
 from datetime import datetime
+from django.utils import timezone
 
 
 class AttendanceFilterSet(filters.FilterSet):
@@ -56,7 +57,7 @@ class BaseAttendanceViewSet(BaseModelViewSet):
 
         return super().get_serializer(*args, **kwargs)
 
-    def _cap_last_modify_to_now(last_modify_in):
+    def _cap_last_modify_to_now(self, last_modify_in):
         if last_modify_in is None:
             return None
 
@@ -70,7 +71,7 @@ class BaseAttendanceViewSet(BaseModelViewSet):
             except:
                 return None
 
-        now = datetime.utcnow()
+        now = timezone.now()
         res = min(now, last_modify)
 
         if input_is_datetime:
