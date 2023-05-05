@@ -56,7 +56,7 @@ class BaseAttendanceViewSet(BaseModelViewSet):
 
         return super().get_serializer(*args, **kwargs)
 
-    def _cap_last_modify_to_now(last_modify_in: str | datetime) -> str | datetime:
+    def _cap_last_modify_to_now(last_modify_in):
         if last_modify_in is None:
             return None
 
