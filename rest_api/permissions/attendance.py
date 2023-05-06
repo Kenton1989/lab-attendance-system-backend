@@ -1,12 +1,13 @@
 from django.db.models import QuerySet
 from django.utils import timezone
 from rest_api.models import User, StudentAttendance, TeacherAttendance, Session, Course, StudentMakeUpSession, Lab
-from rest_api.serializers import StudentAttendanceSerializer, TeacherAttendanceSerializer
+from rest_api.serializers import StudentAttendanceSerializer, TeacherAttendanceSerializer, SessionSerializer, UserSerializer
 from .common import StaffManagedObjectPermission
 from rest_api.permissions.common import is_superuser, in_group
 from datetime import datetime, timedelta
 from rest_api.dynamic_preferences_registry import preferences
 from .session import SessionAccessPermission
+from django.core.exceptions import ValidationError
 
 
 class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
@@ -15,8 +16,9 @@ class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
     def has_create_object_permission(self, user, request, view, serializer):
         assert isinstance(serializer,
                           (StudentAttendanceSerializer, TeacherAttendanceSerializer))
-        session: Session = serializer['session']
-        attender: User = serializer['attender']
+        session: Session = serializer.validated_data['session']
+        attender: User = serializer.validated_data['attender']
+
         return (
             self._can_check_in(user, attender, session, timezone.now()) or
             self._session_permission.has_update_object_permission(

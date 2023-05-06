@@ -5,10 +5,13 @@ from rest_api.permissions import ExtendedObjectPermission, StaffManagedObjectPer
 from typing import Type
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from django.core.exceptions import ValidationError
 
 
 class BaseModelViewSet(ModelViewSet):
     def perform_create(self, serializer):
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
         self.check_create_object_permissions(self.request, serializer)
         return super().perform_create(serializer)
 

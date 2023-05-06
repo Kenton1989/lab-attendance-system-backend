@@ -68,10 +68,13 @@ class BaseAttendanceViewSet(BaseModelViewSet):
         else:
             try:
                 last_modify = datetime.fromisoformat(last_modify_in)
+                if last_modify.tzinfo is None:
+                    last_modify.tzinfo = timezone.get_current_timezone()
             except:
                 return None
 
         now = timezone.now()
+        print(now, last_modify)
         res = min(now, last_modify)
 
         if input_is_datetime:
