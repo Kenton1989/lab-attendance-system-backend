@@ -20,7 +20,8 @@ class BaseModelViewSet(ModelViewSet):
             if not isinstance(perm, ExtendedObjectPermission):
                 continue
 
-            if perm.has_create_object_permission(request.user, request, self, serializer):
+            if not perm.has_create_object_permission(request.user, request, self, serializer):
+
                 self.permission_denied(request,
                                        message=getattr(perm, 'message', None),
                                        code=getattr(perm, 'code', None))
