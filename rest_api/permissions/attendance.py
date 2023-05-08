@@ -71,8 +71,9 @@ class BaseAttendanceAccessPermission(StaffManagedObjectPermission):
 
     def _is_in_check_in_period(self, session: Session, request_time: datetime):
         return (
-            request_time >= self._get_check_in_start_time(session) and
-            request_time <= self._get_check_in_end_time(session)
+            request_time >= self._get_check_in_start_time(session)
+            # and
+            # request_time <= self._get_check_in_end_time(session)
         )
 
     def _get_check_in_start_time(self, session: Session) -> datetime:
