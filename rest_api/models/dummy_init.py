@@ -280,7 +280,7 @@ def create_dummy_admin():
     if settings.DEBUG:
         create_admin = True
     else:
-        ch = input('do you want to create dummy ADMIN in non-debug mode? (y/n)')
+        ch = input('do you want to create dummy ADMIN? (y/n)')
         if ch.startswith('y') or ch.startswith('Y'):
             create_admin = True
 
