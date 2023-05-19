@@ -6,7 +6,7 @@ from urllib.parse import quote
 ENV_TEMPLATE = '''
 DEBUG=False
 PRIMARY_HOSTNAME=127.0.0.1
-DATABASE_URL=mysql://las_db_user:{url_passwd}@localhost:3306/las_db
+DATABASE_URL=mysql://las-db-user:{url_passwd}@localhost:3306/las_db
 DATABASE_RAW_PASSWORD={raw_passwd}
 SECRET_KEY={secret_key}
 '''

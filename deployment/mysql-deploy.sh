@@ -32,7 +32,7 @@ echo started MySQL service
 
 ########################
 
-
+echo 
 echo Please ensure you have updated the password in init-database.sql
 
 read -p "Did you updated that password [y/n]" ANSWER || exit

@@ -5,12 +5,9 @@ DROP DATABASE IF EXISTS las_db;
 CREATE DATABASE las_db; 
 
 -- create a user
-CREATE USER 'las_db_user'@'localhost' 
-IDENTIFIED 
--- WITH authentication_plugin 
+CREATE USER 'las-db-user'@'localhost' IDENTIFIED 
 BY 'Pa$$w0rd123'; -- TODO: CHANGE THE PASSWORD ON THIS LINE !!
 
-GRANT ALL PRIVILEGES ON las_db.* TO 'las_db_user'@'localhost';
+GRANT ALL PRIVILEGES ON las_db.* TO 'las-db-user'@'localhost';
 
-WITH GRANT OPTION;
 FLUSH PRIVILEGES;
