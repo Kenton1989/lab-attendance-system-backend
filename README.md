@@ -10,7 +10,7 @@ cd lab-attendance-system-backend
 
 2. Open the file deployment/init-database.sql, find the following line, and change the password between the quotes. This is the password of the user that will be used by the backend program to access the database. Remember your new password, you will use it again in the next step.
 ``` sql
-BY 'Pa$$w0rd123'; -- TODO: CHANGE THE PASSWORD ON THIS LINE !!
+IDENTIFIED BY 'Pa$$w0rd123'; -- TODO: CHANGE THE PASSWORD ON THIS LINE !!
 ```
 
 3. Run the deployment script, it will install everything needed (hopefully) and start the backend server on 127.0.0.1:8000. Please follow the prompt and enter the required information, including confirmation of installing package, the password of database user, etc.

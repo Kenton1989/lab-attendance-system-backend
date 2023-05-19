@@ -41,4 +41,4 @@ if [[ "$ANSWER" != "y" && "$ANSWER" != "Y" ]]; then
     exit
 fi
 
-mysql < "$INIT_SQL_SCRIPT"
+mysql -u root < "$INIT_SQL_SCRIPT"
