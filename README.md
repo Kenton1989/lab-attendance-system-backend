@@ -18,7 +18,12 @@ IDENTIFIED BY 'Pa$$w0rd123'; -- TODO: CHANGE THE PASSWORD ON THIS LINE !!
 sudo bash ./deployment/be-full-deploy.sh
 ```
 
-4. If you have killed the server and want to restart it, please run the quick deployment script, which will directly run the server and not go through installation steps.
+4. To find out the running lab_attendance_system_backend process, you can try the following command. You can just use `sudo kill` to kill the running process.
+``` bash
+ps aux | grep lab_attendance_system_backend
+```
+
+5. If you have killed the server process and want to restart it, please run the quick deployment script, which will directly start the server and not go through installation steps.
 ``` bash
 sudo bash ./deployment/be-quick-deploy.sh
 ```
