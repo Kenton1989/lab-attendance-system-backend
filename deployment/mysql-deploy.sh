@@ -1,3 +1,8 @@
+set -e # exit when error happens on any line
+set -o pipefail # return error code of last executed command
+
+#########################
+
 # if [[ $UID != 0 ]]; then
 #     echo "Please run this script with sudo:"
 #     echo "sudo $0 $*"
@@ -18,7 +23,7 @@ INIT_SQL_SCRIPT=$SCRIPT_DIR_PATH/init-database.sql
 echo installing MySQL...
 
 sudo apt-get update
-sudo apt-get install mysql-server
+sudo apt-get install mysql-server || exit 1
 
 echo installed MySQL
 
@@ -26,7 +31,7 @@ echo installed MySQL
 
 echo starting MySQL service
 
-systemctl start mysql
+sudo systemctl start mysql || exit 1
 
 echo started MySQL service
 
@@ -39,7 +44,7 @@ echo '(If you are not sure what I am saying, please answer "n" and read README.m
 read ANSWER || exit
 if [[ "$ANSWER" != "y" && "$ANSWER" != "Y" ]]; then
     echo Please update the password and then run the script again.
-    exit
+    exit 1
 fi
 
-sudo mysql < "$INIT_SQL_SCRIPT"
+sudo mysql < "$INIT_SQL_SCRIPT" || exit 1

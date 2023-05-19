@@ -1,3 +1,8 @@
+set -e # exit when error happens on any line
+set -o pipefail # return error code of last executed command
+
+#########################
+
 MANAGE_PY=manage.py
 
 if [ ! -f "$MANAGE_PY" ]; then

@@ -1,3 +1,8 @@
+set -e # exit when error happens on any line
+set -o pipefail # return error code of last executed command
+
+#########################
+
 # if [[ $UID != 0 ]]; then
 #     echo "Please run this script with sudo:"
 #     echo "sudo $0 $*"
@@ -37,6 +42,34 @@ echo
 
 echo
 echo installing python packages...
+
+# additional dependencies of mysqlclient
+sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
+# install wheel as some package use it
+pip install wheel
+pip install -r requirements.txt
+
+echo required python packages installed
+echo
+
+##########################
+
+echo
+bash ./deployment/mysql-deploy.sh
+echo
+
+##########################
+
+echo
+python3.8 ./deployment/gen-env-file.py
+echo
+
+##########################
+
+echo
+bash ./deployment/be-quick-deploy.sh &
+
+exit $?
 
 # additional dependencies of mysqlclient
 sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
