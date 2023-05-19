@@ -17,9 +17,26 @@ if [ ! -f "$MANAGE_PY" ]; then
     exit 1
 fi
 
-apt-get update
+#####################
 
-bash ./deployment/be-full-deploy.sh
-bash ./deployment/fe-full-deploy.sh
+echo installing Nginx...
+
+apt-get update
+apt-get install nginx
+
+echo Nginx installed
+
+echo status of Nginx
+systemctl status nginx
+
+#####################
+
+echo changing firewall setting...
+
+ufw allow 'Nginx HTTP'
+
+echo firewall settings updated
+
+#####################
 
 bash ./deployment/set-nginx.conf.sh

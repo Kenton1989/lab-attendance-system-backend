@@ -9,13 +9,31 @@ if [ ! -f "$MANAGE_PY" ]; then
     exit 1
 fi
 
-source venv/bin/activate
+#########################
 
-gunicorn lab_attendance_system_backend.wsgi
-GUNICORN_EXIT_CODE=$?
+ENV_FILE=.env
 
-if [[ $GUNICORN_EXIT_CODE == 1 ]]; then
-    echo It is likely that gunicorn has already been deployed.
+echo checking location of $ENV_FILE...
+
+if [ ! -f "$ENV_FILE" ]; then
+    echo cannot find $ENV_FILE, please make sure $ENV_FILE is properly created
+    exit 1
 fi
 
-exit $GUNICORN_EXIT_CODE
+#############################
+
+source venv/bin/activate
+
+#############################
+
+echo checking database migrations...
+
+python3 "$MANAGE_PY" migrate
+
+echo database migrations done
+
+#############################
+
+echo starting backend server...
+
+gunicorn lab_attendance_system_backend.wsgi &

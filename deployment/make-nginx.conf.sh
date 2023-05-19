@@ -3,7 +3,11 @@ if [[ $BACKEND_SERVER == "" ]]; then
 fi
 
 if [[ $STATIC_FILE_PATH == "" ]]; then
-    export STATIC_FILE_PATH=/home/VMadmin/dev/lab-attendance-system-webapp/build
+    if [[ $FRONTEND_PROJ_FOLDER == "" ]]; then
+        export STATIC_FILE_PATH=/home/VMadmin/dev/lab-attendance-system-webapp/build
+    else
+        export STATIC_FILE_PATH=$FRONTEND_PROJ_FOLDER/build
+    fi
 fi
 
 envsubst '\$BACKEND_SERVER \$STATIC_FILE_PATH'

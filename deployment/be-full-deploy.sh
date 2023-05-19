@@ -1,5 +1,4 @@
 MANAGE_PY=manage.py
-ENV_FILE=.env
 
 if [[ $UID != 0 ]]; then
     echo "Please run this script with sudo:"
@@ -17,15 +16,6 @@ fi
 
 if [ ! -f "$MANAGE_PY" ]; then
     echo cannot find $MANAGE_PY, please make sure you are running this script in the Django project root folder
-    exit 1
-fi
-
-#########################
-
-echo checking location of .env...
-
-if [ ! -f "$ENV_FILE" ]; then
-    echo cannot find $ENV_FILE, please make sure .env is properly created
     exit 1
 fi
 
@@ -50,6 +40,14 @@ apt-get install python3-dev default-libmysqlclient-dev build-essential
 # install wheel as some package use it
 pip install wheel
 pip install -r requirements.txt
+
+##########################
+
+bash ./deployment/mysql-deploy.sh
+
+##########################
+
+python3.8 ./deployment/gen-env-file.py
 
 ##########################
 
