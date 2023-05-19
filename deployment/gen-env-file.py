@@ -20,10 +20,10 @@ def _main():
         print('cannot find manage.py, please make sure you are running this script in the Django project root folder')
         exit()
 
-    print('Please enter the password of database:')
+    print('Please enter the password of database user:')
     db_passwd = getpass()
 
-    print('Please enter the password of database again:')
+    print('Please enter the password of database user again:')
     db_passwd_again = getpass()
 
     if db_passwd != db_passwd_again:
