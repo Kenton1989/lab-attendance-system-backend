@@ -14,7 +14,10 @@ SECRET_KEY={secret_key}
 
 def _main():
     manage_py = './manage.py'
-    print('checking location of script...')
+    print()
+    print('checking location of .env file generation script...')
+    print('start generating .env file...')
+    print()
 
     if not os.path.exists(manage_py):
         print('cannot find manage.py, please make sure you are running this script in the Django project root folder')
@@ -38,6 +41,9 @@ def _main():
         f.write(ENV_TEMPLATE.format(url_passwd=url_db_passwd,
                 raw_passwd=db_passwd, secret_key=secret_key))
         print(".env file generated")
+    
+    print("quit .env generation script")
+    
 
 
 if __name__ == "__main__":

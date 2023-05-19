@@ -18,18 +18,27 @@ INIT_SQL_SCRIPT=$SCRIPT_DIR_PATH/init-database.sql
 echo installing MySQL...
 
 apt-get update
-apt-get install mysql-shell
+apt-get install mysql-server
 
 echo installed MySQL
 
 ########################
 
+echo starting MySQL service
+
+systemctl start mysql
+
+echo started MySQL service
+
+########################
+
+
 echo Please ensure you have updated the password in init-database.sql
 
 read -p "Did you updated that password [y/n]" ANSWER || exit
-if [["$ANSWER" != "y" && "$ANSWER" != "Y"]]; then
+if [[ "$ANSWER" != "y" && "$ANSWER" != "Y" ]]; then
     echo Please update the password and then run the script again
     exit
 fi
 
-mysql -u root -p < "$INIT_SQL_SCRIPT"
+mysql < "$INIT_SQL_SCRIPT"

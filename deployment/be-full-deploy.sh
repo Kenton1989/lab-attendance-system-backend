@@ -20,19 +20,23 @@ if [ ! -f "$MANAGE_PY" ]; then
 fi
 
 #########################
-
+echo
 echo installing python...
+apt-get update
 # python 3.8
 apt-get install python3.8 python3.8-dev python3.8-distutils python3.8-venv
-
+echo
 #########################
 
+echo
 echo creating python virtual environment...
 python3.8 -m venv venv/
 source venv/bin/activate
+echo
 
 #########################
 
+echo
 echo installing python packages...
 
 # additional dependencies of mysqlclient
@@ -41,16 +45,24 @@ apt-get install python3-dev default-libmysqlclient-dev build-essential
 pip install wheel
 pip install -r requirements.txt
 
+echo required python packages installed
+echo
+
 ##########################
 
+echo
 bash ./deployment/mysql-deploy.sh
+echo
 
 ##########################
 
+echo
 python3.8 ./deployment/gen-env-file.py
+echo
 
 ##########################
 
+echo
 bash ./deployment/be-quick-deploy.sh &
 
 exit $?
