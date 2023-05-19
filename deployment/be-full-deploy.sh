@@ -1,12 +1,11 @@
-MANAGE_PY=manage.py
-
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-    exit 1
-fi
+# if [[ $UID != 0 ]]; then
+#     echo "Please run this script with sudo:"
+#     echo "sudo $0 $*"
+#     exit 1
+# fi
 
 #########################
+MANAGE_PY=manage.py
 
 echo checking location of script...
 
@@ -22,9 +21,9 @@ fi
 #########################
 echo
 echo installing python...
-apt-get update
+sudo apt-get update
 # python 3.8
-apt-get install python3.8 python3.8-dev python3.8-distutils python3.8-venv
+sudo apt-get install python3.8 python3.8-dev python3.8-distutils python3.8-venv
 echo
 #########################
 
@@ -40,7 +39,7 @@ echo
 echo installing python packages...
 
 # additional dependencies of mysqlclient
-apt-get install python3-dev default-libmysqlclient-dev build-essential
+sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
 # install wheel as some package use it
 pip install wheel
 pip install -r requirements.txt

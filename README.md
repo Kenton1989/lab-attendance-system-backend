@@ -15,10 +15,10 @@ cd lab-attendance-system-backend
 IDENTIFIED BY 'Pa$$w0rd123'; -- TODO: CHANGE THE PASSWORD ON THIS LINE !!
 ```
 
-3. Run the deployment script, it will install everything needed (hopefully) and start the backend server on 127.0.0.1:8000. Please follow the prompt and enter the required information, including confirmation of installing package, the password of database user, etc.
+3. Run the deployment script, it will install everything needed (hopefully) and start the backend server on 127.0.0.1:8000. Please follow the prompt and enter the required information, including asking password for `sudo` operation confirmation of installing package, the password of database user, etc.
 
 ```bash
-sudo bash ./deployment/be-full-deploy.sh
+bash ./deployment/be-full-deploy.sh
 ```
 
 4. Create a admin user if necessary. Please follow the prompt and enter the required information like username, password, etc.
@@ -42,5 +42,5 @@ ps aux | grep lab_attendance_system_backend
 7. If you have killed the server process and want to restart it, please run the quick deployment script, which will directly start the server and not go through installation steps.
 
 ```bash
-sudo bash ./deployment/be-quick-deploy.sh
+bash ./deployment/be-quick-deploy.sh
 ```
